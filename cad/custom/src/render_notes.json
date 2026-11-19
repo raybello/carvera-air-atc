@@ -1,8 +1,9 @@
 {
   "atc_bed_adapter": [
-    "Stock-bed riser for the SMW magazine. 2x \u00d88 holes @ 180 mm pitch (Y) take M6 heat-set/press inserts,",
-    "or tap M6 if milled from 6061. 6x bed slots 6.6 wide x 22 long (X adjust \u00b18 mm), counterbored \u00d811 x 6.5 deep from top.",
-    "Engraved outline = magazine footprint 27 x 199.3. Mill from 12 mm HDPE / MDF / Al on the Carvera, or print PETG."
+    "STOCK MDF BED riser, bed coordinates (origin = bed centre). No new holes in the bed:",
+    "clamps through the 3 right-column bed screws (x=129.5; y=-100.5/-6.75/74; \u00d86.6 thru, \u00d811x6.5 cbore) -> use M6 screws 12 mm longer.",
+    "Locates on 4 mm dowel (142,-15). Magazine: M6 at (140,80) M6x16 + (140,-100) M6x20 into captive M6 nuts (10.2 AF x 8 deep from below).",
+    "Toolsetter clearance R7.2. Mill on the Carvera from 12 mm HDPE / 6061 (tapped=True), or print PETG 6 walls 50 %."
   ],
   "bore_test_coupons": [
     "Print FIRST in the same filament/settings as the gears. Top row: \u00d813.9-14.3 (lever cylinder, BottomGear).",

@@ -23,7 +23,7 @@ Add automatic tool changing (ATC) to the owner's **Makera Carvera Air**:
 | 3 Product + content | ⚪ Not started | Goals in `docs/phase3/README.md` |
 
 ## ▶ Next actions for the owner (in order)
-1. **Answer the open questions below** (especially Q1: which bed?).
+1. **Measure Q1b** (2 min with calipers; it confirms the adapter fits) and answer Q2–Q5.
 2. **Order the geared stepper today** (StepperOnline 17HS15-1584S-MG50; it's the critical path), then the rest of `bom/BOM.md`.
 3. Run `./scripts/fetch_upstream.sh` (already run once on this Mac). Print `cad/custom/stl/bore_test_coupons.stl` first, then the upstream parts (`docs/phase1/BUILD_PLAN.md` §2).
 4. Build the opto interface (`electronics/inverter/README.md`) and bench-test it.
@@ -33,7 +33,8 @@ Add automatic tool changing (ATC) to the owner's **Makera Carvera Air**:
 ## Open questions (owner to answer, then agents record the answers here)
 | # | Question | Answer |
 |---|---|---|
-| Q1 | Bed type: stock MDF / SMW fixture plate / Funssor? | _pending_ |
+| Q1 | Bed type: stock MDF / SMW fixture plate / Funssor? | **Stock MDF bed** (2026-11-19) |
+| Q1b | Stock MDF bed thickness + length of the right-column M6 bed screws; confirm screw centres 23.5 mm from right edge, 10.5/104.25/185 mm from front | _pending (measure)_ |
 | Q2 | Is the AD5M nozzle hardened steel (for PETG-CF)? | _pending_ |
 | Q3 | Size of the owned circular magnets (need 10×2 ×3)? | _pending_ |
 | Q4 | Current firmware version; `model` output (record the number after CA1 → needed to revert) | _pending_ |
@@ -46,6 +47,8 @@ Add automatic tool changing (ATC) to the owner's **Makera Carvera Air**:
 | 2026-11-19 | Phase 1 replicates Warioo's Instructables mod as-is (8 pods, geared NEMA17 + HTD belt, roller switch, M12 laser sensor) | Proven, fastest path to a working machine |
 | 2026-11-19 | Upstream files are **CC BY-NC-ND 4.0** → kept in gitignored `third_party/`; the product must be a clean-room redesign | `docs/LICENSING.md` |
 | 2026-11-19 | Added original parts: stock-bed adapter, bore coupons, chip caps, signal-board box | Upstream gaps (stock bed unsupported; bores are critical) |
+| 2026-11-19 | Owner has the **stock MDF bed**. The adapter clamps through the 3 right-column bed screws + the 4 mm dowel at (142,-15), with no drilling. The magazine sits where it would on the SMW plate (holes (140,80)/(140,-100)) | Bed interface read from the public SMW Carvera Air plate drawing/STEP (S1988 rev 2), which reuses the stock screw/dowel positions |
+| 2026-11-19 | Tool numbering: T1 = back (next to the toolsetter), T8 = front | Upstream custom_tool_slots.txt: T1 Y=-49.3 → T8 Y=-189.3 |
 | 2026-11-19 | PC817 opto interface preferred over the upstream 2N2222 inverter | Isolation; LCSC C20612594 |
 | 2026-11-19 | TB6600 / Pico / AS5600 / linear stage are not installed in Phase 1; TB6600+Pico+AS5600 serve as an optional bench tester | The Carvera has its own driver socket and firmware support |
 
@@ -57,6 +60,7 @@ bom/                       ← phase1_bom.csv (machine-readable), BOM.md (source
 cad/custom/src/parts.py    ← OUR parametric CadQuery parts → stl/, step/, renders/
 cad/upstream/              ← (empty, reserved) upstream files live in third_party/ instead
 third_party/warioo-atc/    ← GITIGNORED: upstream STEP/STL/renders/photos (CC BY-NC-ND)
+third_party/smw/           ← GITIGNORED: SMW Carvera Air plate STEP + drawing (bed interface reference)
 docs/phase1/               ← BUILD_PLAN.md, TEST_CHECKLIST.md, BUILD_LOG.md
 docs/phase2/, docs/phase3/ ← goals and later deliverables
 docs/research/             ← SOURCE_SUMMARY.md, upstream_part_dimensions.md, PDFs (gitignored)
@@ -64,7 +68,7 @@ docs/LICENSING.md          ← IP rules (read before any product work)
 electronics/inverter/      ← 24 V tool-sensor interface
 firmware/config/           ← MDI setup commands, custom_tool_slots.txt
 firmware/pico/             ← bench_stepper.py (TB6600 + Pico + AS5600 test rig)
-scripts/                   ← fetch_upstream.sh, step_to_stl.py, render.py
+scripts/                   ← fetch_upstream.sh, step_to_stl.py, render.py, bed_layout.py (stock-bed drawing)
 media/ marketing/ store/   ← Phase 3
 ```
 
@@ -88,3 +92,4 @@ media/ marketing/ store/   ← Phase 3
 | Date | Agent | Summary |
 |---|---|---|
 | 2026-11-19 | Claude (Opus) | Set up the repo. Researched Instructables + Hackster (full text, 10 STEP files, tool-slot config, 18 photos). Converted and measured all upstream parts. Designed 5 original parts with dimensioned renders. Wrote the Phase 1 plan, BOM (LCSC-checked), firmware config, opto interface, Pico bench tester and licensing rules. |
+| 2026-11-19 | Claude (Opus) | Owner confirmed the stock MDF bed. Pulled the bed interface from the SMW plate CAD; redesigned `atc_bed_adapter` (clamps through bed screws, dowel located, captive nuts, toolsetter relief); added `stock_bed_layout.png`; updated the plan, BOM and firmware notes (Z offset, safe-Z). T1 = back. |

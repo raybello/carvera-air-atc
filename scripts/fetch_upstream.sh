@@ -32,3 +32,10 @@ for p in FGY/U63U/MLSKBG1M/FGYU63UMLSKBG1M.jpg FDA/HCMG/MLVCVA74/FDAHCMGMLVCVA74
   i=$((i+1)); ext="${p##*.}"; dl "images/$(printf %02d $i)_$(basename "$p" .$ext).$ext" "$p"
 done
 echo "Done. Open the .step files directly in OrcaSlicer (File > Import) or run scripts/step_to_stl.py"
+
+# Saunders Machine Works Carvera Air fixture plate: public CAD, used ONLY to read stock-bed
+# interface positions (bed screws, dowels, outline). Vendor copyright, so gitignored.
+SMW="$(cd "$(dirname "$0")/.." && pwd)/third_party/smw"; mkdir -p "$SMW"
+curl -fsSL -A "$UA" -o "$SMW/Carvera_Air_Fixture_Plate_MM.step" "https://saundersmachineworks.com/cdn/shop/files/Makera_Carvera_Air_Fixture_Plate_MM.step?v=7612916714956886296"
+curl -fsSL -A "$UA" -o "$SMW/Carvera_Air_Fixture_Plate_Drawing.pdf" "https://saundersmachineworks.com/cdn/shop/files/Carvera_Air_Website_Drawing_2c7664e5-fdd9-4e01-83fe-fb07c7d0079c.pdf?v=18141808347057102996"
+echo "  SMW reference plate -> $SMW"

@@ -17,13 +17,14 @@ Machine-readable: [`phase1_bom.csv`](phase1_bom.csv). Prices are **rough CAD est
 | E4 | Opto interface | PC817C + 4.7 k ¼ W + perfboard | 1 | **LCSC C20612594** / Amazon module | ? | **C20612594** |
 | E5 | JST-SM 2.54 kit | 2-pin + 4-pin pairs (+crimper) | 1 | Amazon.ca | ? | (PH alt: **C157952** PHR-6 + **C111515** SPH-002T) |
 | F4 | M3 countersunk | 10–16 mm | 16 | Home Depot / Fastenal | ✓ | ✗ |
-| F5 | M6×20 SHCS | ISO 4762 | 3 | Home Depot / Canadian Tire | ✓ | ✗ |
+| F5 | M6×20 SHCS | ISO 4762 | 1 (+1 in F8) | Home Depot / Canadian Tire | ✓ | ✗ |
+| F8 | **Stock-bed adapter hardware** | 3× M6 SHCS (original bed-screw length **+12 mm**), 2× M6 hex nuts, M6×16 + M6×20, 4 mm dowel pin | 1 set | Home Depot / Fastenal | ✓ | ✗ |
 
 ## Probably have (check inventory)
 M4×12 ×4, M4×10 ×2, M3×10 ×2 (your M3/M4 kit) · 10×2 mm magnets ×3 (measure yours) · CA glue · 3-core wire · PETG / PETG-CF filament.
 
-## Stock-bed only
-`atc_bed_adapter`: 12 mm HDPE cutting board (IKEA / Dollarama / Canadian Tire) **or** 6061 plate (Metal Supermarkets Ottawa), 2× M6 inserts, 6× M6 (or M5) × 16 SHCS.
+## Stock bed (your machine)
+`atc_bed_adapter`: print it in PETG first. Permanent version: 12 mm HDPE cutting board (IKEA / Dollarama / Canadian Tire) or 12 mm 6061 (Metal Supermarkets Ottawa). Hardware is line F8. **Pull one right-column bed screw before shopping** so you can buy the +12 mm length.
 
 ## Your existing inventory: what's used
 | You own | Phase 1 role |

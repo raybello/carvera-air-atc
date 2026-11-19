@@ -31,7 +31,8 @@ The motor turns the same cylinder the manual lever turns, so it clamps and uncla
 
 | # | Question | Why it matters |
 |---|---|---|
-| Q1 | **Which bed do you have?** Stock MDF, SMW fixture plate, or Funssor? | Upstream magazine bolts to **SMW only**. On a stock bed you also need `cad/custom/stl/atc_bed_adapter.stl` (designed here). |
+| Q1 | ~~Which bed?~~ **Answered 2026-11-19: stock MDF bed** | You need `cad/custom/stl/atc_bed_adapter.stl` (see §2d) |
+| Q1b | **Measure:** stock MDF bed thickness, and the length of the 3 right-column bed screws | Sets the adapter thickness and the replacement screw length |
 | Q2 | Is the AD5M nozzle **hardened steel**? | PETG-CF wears out brass or stainless nozzles. If it isn't hardened, print in plain PETG. |
 | Q3 | Size of your circular magnets? | The cover needs 3× **10 × 2 mm**. |
 | Q4 | Current firmware version (`version` in MDI)? | You need the Community Firmware **≥ 2.1.0c-RC1**, and a dev build **≥ 2026-03-08** for `atc.detector.enable`. |
@@ -94,10 +95,24 @@ Total print time is roughly **14–18 h**, mostly the magazine (~8 h) and cover 
 
 | File | Purpose |
 |---|---|
-| `cad/custom/stl/atc_bed_adapter.stl` | **Only for a stock bed.** An 80 × 230 × 12 riser plate. 2× Ø8 holes at **180 mm** pitch match the magazine. 6 counterbored slots fit any bed hole grid. Best made **on the Carvera** from 12 mm HDPE or 6061 (Step 7), or printed in PETG for the first install. |
+| `cad/custom/stl/atc_bed_adapter.stl` | **Needed: you have the stock bed.** A 37 × 199.3 × 12 riser. See §2d. |
 | `cad/custom/stl/bore_test_coupons.stl` | Step 2a |
 | `cad/custom/stl/magazine_chip_cap.stl` ×2 | Push-in caps for the magazine's Ø11 M6 counterbores, to keep chips out |
 | `cad/custom/stl/signal_board_box.stl` + `_lid` | Enclosure for the 24 V sensor interface board |
+
+### 2d. Stock-bed adapter (your machine)
+
+Warioo's magazine bolts into an SMW aluminium plate. Your stock MDF bed has no M6 grid, so the adapter recreates the two M6 points **without drilling the bed**:
+
+![stock bed layout](../../cad/custom/renders/stock_bed_layout.png)
+
+- **Clamping:** it bolts through the bed's own **right-hand column of 3 M6 hold-down screws** (x = 129.5; y = −100.5 / −6.75 / 74 from bed centre). Replace those 3 screws with ones **12 mm longer** (adapter thickness).
+- **Location:** a 4 mm pin through the adapter into the stock dowel position at **(142, −15)**.
+- **Magazine:** 2 captive **M6 hex nuts**, pressed into pockets from below **before** install, at (140, 80) and (140, −100), which is 180 mm apart. Use an **M6×16** in the back foot (4.5 mm flange) and an **M6×20** in the front (11 mm counterbored flange). Neither screw tip reaches the MDF.
+- **Toolsetter:** the back end is relieved (R7.2) around the toolsetter, just like the SMW plate.
+- **⚠ Verify first (2 min with calipers):** the right-column bed screw centres should be **23.5 mm from the right edge** and **10.5 / 104.25 / 185.0 mm from the front edge**. These come from the SMW plate drawing, which reuses the stock screw positions. If yours differ, change `BED_SCREWS_RIGHT` in `cad/custom/src/parts.py` and re-run it.
+- **Make it:** print it in PETG (6 walls, 50 % infill, ~2.5 h) for the first install. Then in Step 7 mill a permanent one from a 12 mm HDPE cutting board, or 6061 with `tapped=True` (tap M6, no nuts).
+- **Height:** the magazine sits 12 mm + (stock MDF top − SMW top) away from Warioo's numbers. **Re-teach every Z, and raise the ATC safe-Z values** before the first run (see `firmware/config/README.md`).
 
 ![adapter](../../cad/custom/renders/atc_bed_adapter.png)
 
@@ -122,7 +137,7 @@ Total print time is roughly **14–18 h**, mostly the magazine (~8 h) and cover 
 4. **Belt and mount:** place the mount inside the housing with the motor shaft pointing **left**. Loop the belt over BottomGear, then tilt the mount (shaft down, motor raised) to slip it over TopGear. Press the mount down to tension the belt and reuse the 4× M3 screws. Tip: start the left-side screws loosely first, then lever the mount into tension.
 5. **Switch bracket:** mount the ATCSensorMount with the switch (cable-tied) using 2× **M4×10**. Start it in the **lowest** position; you'll adjust it in Step 6.
 6. **Driver:** insert the **DRV8825** in the spare (right) driver socket, oriented like its neighbours. Set **VRef ≈ 0.55 V** (formula `VRef = 0.5 × Imax / 2`; upstream found 0.55 V reliable for a 1.58 A motor). Adjust it with the machine on and a ceramic screwdriver.
-7. **Magazine:** SMW bed → 2× **M6×20** straight in. Stock bed → bolt `atc_bed_adapter` to the bed through its slots, then the magazine into the adapter's M6 inserts. Push in the chip caps.
+7. **Adapter + magazine (stock bed):** press the 2 M6 nuts into the adapter pockets. Remove the 3 right-column bed screws, set the adapter on the bed with the 4 mm pin in the dowel hole at (142, −15), and refit the screws with ones **12 mm longer**. Bolt the magazine down with **M6×16 (back)** and **M6×20 (front)**, then push in the chip caps.
 8. **Laser sensor:** mount it on SensorMount and aim it just **under the magazine lip**. Wiring: sensor +24 V and GND from the PSU, then sensor signal → interface board → the **yellow wire of the 4-pin EXT connector** (left side of the mainboard), which is cut and re-terminated. This is input **0.21**.
 
 ---
@@ -138,7 +153,7 @@ Then paste the commands from [`firmware/config/atc_setup_commands.txt`](../../fi
 
 ## Step 6: Calibrate and test (≈1–2 h)
 
-Follow the checklist in [`docs/phase1/TEST_CHECKLIST.md`](TEST_CHECKLIST.md): jog clamp and unclamp with the main-button long press, then adjust the switch bracket height so the cam trips the roller exactly at the end of unclamp. Next, teach each slot's X/Y/Z: jog an empty holder into pod 1, read the machine coordinates, and set the 20 mm pitch for the rest. If you used the adapter, Z rises by its thickness (12 mm). Run M6 T1…T8 dry runs **with no spindle rotation**, then real tool changes.
+Follow the checklist in [`docs/phase1/TEST_CHECKLIST.md`](TEST_CHECKLIST.md): jog clamp and unclamp with the main-button long press, then adjust the switch bracket height so the cam trips the roller exactly at the end of unclamp. Next, teach each slot's X/Y/Z: jog an empty holder into pod 1, read the machine coordinates, and set the 20 mm pitch for the rest. Because of the adapter, Z is about 12 mm higher than Warioo's numbers (more if the stock MDF sits higher than an SMW plate). Raise `atc.safe_z_*` first. Run M6 T1…T8 dry runs **with no spindle rotation**, then real tool changes.
 
 ---
 
@@ -149,7 +164,7 @@ Once it changes tools reliably, have the machine replace printed parts with mach
 | Order | Part | Stock | Why |
 |---|---|---|---|
 | 1 | Face magazine bottom flat | The printed magazine | Upstream recommends it; prevents delamination |
-| 2 | **atc_bed_adapter** (stock-bed users) | 12 mm HDPE cutting board or 6061 | Stiffer, flat, permanent. Tap M6 in Al |
+| 2 | **atc_bed_adapter** (your stock bed) | 12 mm HDPE cutting board or 6061 | Replaces the printed one. Stiffer and dead flat. In 6061, tap M6 and skip the nuts |
 | 3 | **TopGear milled keyway inlay** (Ø28 × 4) | 4 mm 6061 | Upstream v2: a metal key seat stops the printed keyway wearing |
 | 4 | Magazine body, machined | 2× 19 mm HDPE laminated, or epoxy tooling board | Phase 2 candidate: no layer lines, chip-proof, sellable |
 

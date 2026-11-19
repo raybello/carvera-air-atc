@@ -16,40 +16,58 @@ for d in (STL, STEP):
     d.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------- interface data
-# Measured from SMW_atcMagazine_v3.step (see docs/research/upstream_part_dimensions.md)
-MAG_W = 27.0            # magazine footprint X (mm)
-MAG_L = 199.3           # magazine footprint Y (mm)
-MAG_HOLE_PITCH = 180.0  # the two M6 mounting holes, along Y
-# Hole centres relative to magazine footprint centre (Y): +93.5 and -86.5 around model
-# centre 2.15 -> +91.35 / -88.65. X: 14.0 from the left edge (centre is 13.5) -> +0.5.
-MAG_HOLES = [(0.5, 91.35), (0.5, -88.65)]
+# BED FRAME: origin = centre of the Carvera Air bed (306 x 222 mm), +X = right, +Y = back,
+# Z = 0 = top surface of the stock MDF bed. Interface positions measured from the public
+# Saunders Machine Works (SMW) Carvera Air plate drawing/STEP (which reuses the stock bed's
+# screws, dowel standoffs and outline) and from the upstream magazine STEP.
+BED_X, BED_Y = 306.0, 222.0
+BED_SCREWS = [(x, y) for x in (-142.5, -5.5, 129.5) for y in (-100.5, -6.75, 74.0)]  # 9x M6 SHCS
+BED_SCREWS_RIGHT = [(129.5, -100.5), (129.5, -6.75), (129.5, 74.0)]
+DOWELS = [(-145.5, -15), (-108, -58.5), (-57, -103.5), (-57, 30), (31.5, -58.5), (142, -15)]  # 4 mm pins
+TOOLSETTER = (135.44, 93.44)    # centre of the bed's back-right toolsetter notch
+NOTCH_Y = 88.3                  # bed edge just in front of the toolsetter (x > ~128.5)
+# Upstream magazine as installed on the SMW plate (its holes land on the 20 mm M6 grid):
+MAG_HOLES = [(140.0, 80.0), (140.0, -100.0)]     # 180 mm pitch
+MAG_X = (126.0, 153.0)                           # footprint flush with right bed edge
+MAG_Y = (-111.0, NOTCH_Y)                        # flush with front edge, foot ends at notch
+POD_X = 140.5
+PODS = [(POD_X, 56.5 - 20 * i) for i in range(8)]  # T1 (back) .. T8 (front), per upstream slot file
 
 
 # ---------------------------------------------------------------- 1. stock-bed adapter
-def bed_adapter(thickness=12.0, width=80.0, length=230.0, slot_len=22.0, slot_w=6.6,
-                slot_x=(-23.0, 23.0), slot_y=(-75.0, 0.0, 75.0), insert_d=8.0):
-    """Riser plate that lets the SMW magazine sit on the STOCK Carvera Air bed.
+def bed_adapter(thickness=12.0, x0=116.0, nut_af=10.2, nut_depth=8.0, tapped=False):
+    """Riser that puts the SMW-style magazine on the STOCK MDF bed, with NO new holes in the bed.
 
-    * Magazine side: 2x M6 holes at 180 mm pitch, sized for M6 heat-set/press inserts
-      (insert_d) - or tap M6 directly if you mill it from aluminium.
-    * Bed side: 6 slots (X direction) so it fits any bed hole grid; bolt with M6 or M5
-      cap screws into the bed's threaded inserts. Counterbored so heads sit flush.
-    Machine it ON THE CARVERA from 12 mm HDPE (cutting board), MDF or 6061 plate,
-    or 3D print it (PETG, 6 walls, 40 % infill).
+    * Clamps down through the bed's own right-hand column of 3x M6 hold-down screws
+      (x=129.5; y=-100.5, -6.75, 74): swap them for screws `thickness` mm longer.
+    * Locates on the stock 4 mm dowel position (142, -15).
+    * Magazine bolts to 2x M6 at (140, 80) / (140, -100): captive M6 hex nuts in pockets
+      from below (HDPE/MDF/PETG), or `tapped=True` -> 5.0 mm tap drill for M6 in 6061.
+      Screws (12 mm adapter): back foot (4.5 mm flange) M6x16, front (11 mm flange) M6x20.
+      Nut sits 3-8 mm above the bed, so neither screw tip touches the MDF.
+    Model is in BED coordinates (origin = bed centre); CAM/slicer can re-zero it.
     """
-    p = cq.Workplane("XY").box(width, length, thickness).edges("|Z").fillet(4)
-    p = p.faces(">Z").workplane().pushPoints(MAG_HOLES).hole(insert_d)
-    pts = [(x, y) for x in slot_x for y in slot_y]
-    # bed slots: through slot + counterbore slot (head of M6 SHCS = 10 mm, 6 mm deep)
-    for x, y in pts:
-        p = p.cut(cq.Workplane("XY").center(x, y).slot2D(slot_len, slot_w, 0)
-                  .extrude(thickness * 2, both=True))
-        p = p.cut(cq.Workplane("XY").workplane(offset=thickness / 2 - 6.5).center(x, y)
-                  .slot2D(slot_len + 4.5, 11.0, 0).extrude(10))
-    # edge marks to align magazine footprint
-    mark = cq.Workplane("XY").workplane(offset=thickness / 2 - 0.6).center(0.5, 1.35) \
-        .rect(MAG_W, MAG_L).rect(MAG_W - 1.2, MAG_L - 1.2).extrude(1)
-    return p.cut(mark)
+    w, y0, y1 = BED_X / 2 - x0, -BED_Y / 2, NOTCH_Y
+    p = (cq.Workplane("XY").center((x0 + BED_X / 2) / 2, (y0 + y1) / 2)
+         .rect(w, y1 - y0).extrude(thickness).edges("|Z").fillet(2.0))
+    # clearance for the toolsetter (r 7.2 around its axis)
+    p = p.cut(cq.Workplane("XY").center(*TOOLSETTER).circle(7.2).extrude(thickness * 3, both=True))
+    top = cq.Workplane("XY").workplane(offset=thickness)
+    # bed hold-down screws: 6.6 thru + 11 counterbore, heads sit 0.5 below the top
+    p = p.cut(cq.Workplane("XY").pushPoints(BED_SCREWS_RIGHT).circle(3.3).extrude(thickness))
+    p = p.cut(top.workplane(offset=-6.5).pushPoints(BED_SCREWS_RIGHT).circle(5.5).extrude(7))
+    # magazine screws
+    if tapped:
+        p = p.cut(cq.Workplane("XY").pushPoints(MAG_HOLES).circle(2.5).extrude(thickness))
+    else:
+        p = p.cut(cq.Workplane("XY").pushPoints(MAG_HOLES).circle(3.3).extrude(thickness))
+        p = p.cut(cq.Workplane("XY").pushPoints(MAG_HOLES).polygon(6, nut_af / 0.866).extrude(nut_depth))
+    # dowel
+    p = p.cut(cq.Workplane("XY").center(*DOWELS[-1]).circle(2.05).extrude(thickness))
+    # engraved pod index marks (0.6 deep) so slot teaching starts close
+    for i, (x, y) in enumerate(PODS):
+        p = p.cut(top.workplane(offset=-0.6).center(x0 + 2.5, y).rect(3, 0.8).extrude(1))
+    return p
 
 
 # ---------------------------------------------------------------- 2. bore test coupons
