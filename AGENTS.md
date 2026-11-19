@@ -35,7 +35,7 @@ Add automatic tool changing (ATC) to the owner's **Makera Carvera Air**:
 |---|---|---|
 | Q1 | Bed type: stock MDF / SMW fixture plate / Funssor? | **Stock MDF bed** (2026-11-19) |
 | Q1b | Confirm right-column screw centres 23.5 mm from right edge, 10.5/104.25/185 mm from front | **Verified by owner to ±0.01 mm (2026-11-19)**: `atc_bed_adapter` geometry is final for printing |
-| Q1c | Stock MDF bed thickness + length of the right-column M6 bed screws (to buy screws +12 mm) | MDF = **15.0 mm**; original bed screw = **M6 × 23 mm** (2026-11-19). Replacement: **3× M6×30 SHCS** (see decision log) |
+| Q1c | Stock MDF bed thickness + length of the right-column M6 bed screws (to size replacement screws) | MDF = **15.0 mm**; original bed screw = **M6 × 23 mm** (2026-11-19). Replacement: **3× M6×30 SHCS** (see decision log) |
 | Q2 | Is the AD5M nozzle hardened steel (for PETG-CF)? | _pending_ |
 | Q3 | Size of the owned circular magnets (need 10×2 ×3)? | _pending_ |
 | Q4 | Current firmware version; `model` output (record the number after CA1 → needed to revert) | _pending_ |

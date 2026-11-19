@@ -55,7 +55,7 @@ az.annotate("T1 centre\n(140.5, 56.5)", P.PODS[0], (113, 40), fontsize=7, arrowp
 
 fig.text(0.01, 0.01,
          "VERIFY ON YOUR MACHINE BEFORE MAKING THE ADAPTER: right-column bed screw centres are 23.5 mm from the right edge and 10.5 / 104.25 / 185.0 mm "
-         "from the front edge.\nAdapter clamps through those 3 screws (replace with M6 screws +12 mm longer), locates on the 4 mm dowel at (142,-15); "
+         "from the front edge.\nAdapter clamps through those 3 screws (replace stock M6x23 with M6x30), locates on the 4 mm dowel at (142,-15); "
          "magazine bolts into 2 captive M6 nuts at (140, 80) and (140, -100).\nSource of bed geometry: Saunders Machine Works Carvera Air plate drawing S1988 rev 2 "
          "(reuses stock screw/dowel positions). Magazine position: Warioo SMW install.", fontsize=8.5, va="bottom")
 out = pathlib.Path(__file__).resolve().parents[1] / "cad/custom/renders/stock_bed_layout.png"
