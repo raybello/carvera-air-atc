@@ -106,7 +106,7 @@ Warioo's magazine bolts into an SMW aluminium plate. Your stock MDF bed has no M
 
 ![stock bed layout](../../cad/custom/renders/stock_bed_layout.png)
 
-- **Clamping:** it bolts through the bed's own **right-hand column of 3 M6 hold-down screws** (x = 129.5; y = −100.5 / −6.75 / 74 from bed centre). Replace those 3 screws with ones **12 mm longer** (adapter thickness).
+- **Clamping:** it bolts through the bed's own **right-hand column of 3 M6 hold-down screws** (x = 129.5; y = −100.5 / −6.75 / 74 from bed centre). Replace those 3 screws (stock M6×23) with **M6×30**. The head now sits 5.5 mm above the MDF instead of in its counterbore, and M6×30 still leaves about 9.5 mm of thread engagement without risking bottoming out.
 - **Location:** a 4 mm pin through the adapter into the stock dowel position at **(142, −15)**.
 - **Magazine:** 2 captive **M6 hex nuts**, pressed into pockets from below **before** install, at (140, 80) and (140, −100), which is 180 mm apart. Use an **M6×16** in the back foot (4.5 mm flange) and an **M6×20** in the front (11 mm counterbored flange). Neither screw tip reaches the MDF.
 - **Toolsetter:** the back end is relieved (R7.2) around the toolsetter, just like the SMW plate.
@@ -137,7 +137,7 @@ Warioo's magazine bolts into an SMW aluminium plate. Your stock MDF bed has no M
 4. **Belt and mount:** place the mount inside the housing with the motor shaft pointing **left**. Loop the belt over BottomGear, then tilt the mount (shaft down, motor raised) to slip it over TopGear. Press the mount down to tension the belt and reuse the 4× M3 screws. Tip: start the left-side screws loosely first, then lever the mount into tension.
 5. **Switch bracket:** mount the ATCSensorMount with the switch (cable-tied) using 2× **M4×10**. Start it in the **lowest** position; you'll adjust it in Step 6.
 6. **Driver:** insert the **DRV8825** in the spare (right) driver socket, oriented like its neighbours. Set **VRef ≈ 0.55 V** (formula `VRef = 0.5 × Imax / 2`; upstream found 0.55 V reliable for a 1.58 A motor). Adjust it with the machine on and a ceramic screwdriver.
-7. **Adapter + magazine (stock bed):** press the 2 M6 nuts into the adapter pockets. Remove the 3 right-column bed screws, set the adapter on the bed with the 4 mm pin in the dowel hole at (142, −15), and refit the screws with ones **12 mm longer**. Bolt the magazine down with **M6×16 (back)** and **M6×20 (front)**, then push in the chip caps.
+7. **Adapter + magazine (stock bed):** press the 2 M6 nuts into the adapter pockets. Remove the 3 right-column bed screws, set the adapter on the bed with the 4 mm pin in the dowel hole at (142, −15), and refit them as **3× M6×30**. Snug them by hand first, check the adapter sits flat, then tighten. Bolt the magazine down with **M6×16 (back)** and **M6×20 (front)**, then push in the chip caps.
 8. **Laser sensor:** mount it on SensorMount and aim it just **under the magazine lip**. Wiring: sensor +24 V and GND from the PSU, then sensor signal → interface board → the **yellow wire of the 4-pin EXT connector** (left side of the mainboard), which is cut and re-terminated. This is input **0.21**.
 
 ---

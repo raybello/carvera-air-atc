@@ -35,7 +35,7 @@ Add automatic tool changing (ATC) to the owner's **Makera Carvera Air**:
 |---|---|---|
 | Q1 | Bed type: stock MDF / SMW fixture plate / Funssor? | **Stock MDF bed** (2026-11-19) |
 | Q1b | Confirm right-column screw centres 23.5 mm from right edge, 10.5/104.25/185 mm from front | **Verified by owner to ±0.01 mm (2026-11-19)**: `atc_bed_adapter` geometry is final for printing |
-| Q1c | Stock MDF bed thickness + length of the right-column M6 bed screws (to buy screws +12 mm) | MDF = **15.0 mm** (2026-11-19). Screw length: _pending_ |
+| Q1c | Stock MDF bed thickness + length of the right-column M6 bed screws (to buy screws +12 mm) | MDF = **15.0 mm**; original bed screw = **M6 × 23 mm** (2026-11-19). Replacement: **3× M6×30 SHCS** (see decision log) |
 | Q2 | Is the AD5M nozzle hardened steel (for PETG-CF)? | _pending_ |
 | Q3 | Size of the owned circular magnets (need 10×2 ×3)? | _pending_ |
 | Q4 | Current firmware version; `model` output (record the number after CA1 → needed to revert) | _pending_ |
@@ -50,6 +50,7 @@ Add automatic tool changing (ATC) to the owner's **Makera Carvera Air**:
 | 2026-11-19 | Added original parts: stock-bed adapter, bore coupons, chip caps, signal-board box | Upstream gaps (stock bed unsupported; bores are critical) |
 | 2026-11-19 | Owner has the **stock MDF bed**. The adapter clamps through the 3 right-column bed screws + the 4 mm dowel at (142,-15), with no drilling. The magazine sits where it would on the SMW plate (holes (140,80)/(140,-100)) | Bed interface read from the public SMW Carvera Air plate drawing/STEP (S1988 rev 2), which reuses the stock screw/dowel positions |
 | 2026-11-19 | Z offset vs Warioo: MDF 15.0 + adapter 12.0 = 27.0 mm vs SMW plate 17.78 mm, so the pods sit **+9.22 mm higher**. Starting slot Z ≈ -71.1; safe_z_empty -40 → **-30.8** | Assumes the MDF bed and the SMW plate sit on the same base surface (SMW reuses the bed screws/standoffs) |
+| 2026-11-19 | Bed-screw replacement = **M6×30**, not 23+12 = 35 | The head moves from the MDF counterbore floor (≈6 mm deep, assumed) to the adapter counterbore floor (5.5 mm above the MDF), so it rises ≈11.5 mm. M6×35 would go 0.5 mm deeper than the original and could bottom out in a blind hole. M6×30 leaves ≈9.5 mm thread engagement (≥1.5 d). Max safe length = 23 + 5.5 + MDF counterbore depth |
 | 2026-11-19 | Tool numbering: T1 = back (next to the toolsetter), T8 = front | Upstream custom_tool_slots.txt: T1 Y=-49.3 → T8 Y=-189.3 |
 | 2026-11-19 | PC817 opto interface preferred over the upstream 2N2222 inverter | Isolation; LCSC C20612594 |
 | 2026-11-19 | TB6600 / Pico / AS5600 / linear stage are not installed in Phase 1; TB6600+Pico+AS5600 serve as an optional bench tester | The Carvera has its own driver socket and firmware support |
@@ -97,3 +98,4 @@ media/ marketing/ store/   ← Phase 3
 | 2026-11-19 | Claude (Opus) | Owner confirmed the stock MDF bed. Pulled the bed interface from the SMW plate CAD; redesigned `atc_bed_adapter` (clamps through bed screws, dowel located, captive nuts, toolsetter relief); added `stock_bed_layout.png`; updated the plan, BOM and firmware notes (Z offset, safe-Z). T1 = back. |
 | 2026-11-19 | Claude (Opus) | Owner verified the stock-bed screw positions to ±0.01 mm; the adapter is cleared for printing. |
 | 2026-11-19 | Claude (Opus) | Recorded MDF = 15.0 mm; computed the +9.22 mm Z offset; updated the slot file comments and setup commands. |
+| 2026-11-19 | Claude (Opus) | Original bed screw M6×23 recorded; replacement sized to M6×30; BOM and plan updated. |
