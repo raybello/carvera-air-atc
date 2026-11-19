@@ -1,8 +1,8 @@
 {
   "atc_bed_adapter": [
     "STOCK MDF BED riser, bed coordinates (origin = bed centre). No new holes in the bed:",
-    "clamps through the 3 right-column bed screws (x=129.5; y=-100.5/-6.75/74; \u00d86.6 thru, \u00d811x6.5 cbore) -> replace stock M6x23 with M6x30.",
-    "Locates on 4 mm dowel (142,-15). Magazine: M6 at (140,80) M6x16 + (140,-100) M6x20 into captive M6 nuts (10.2 AF x 8 deep from below).",
+    "clamps through the 3 right-column bed screws (x=129.5; y=-100.5/-6.75/74; \u00d85.5 thru, \u00d89.6x3.8 cbore) -> stock M5 low-head screws become M5x30 DIN 7984.",
+    "Locates on 4 mm dowel (142,-15). Magazine: M6 at (140,80) M6x16 + (140,-100) M6x20 into captive M6 nuts (10.2 AF x 7.6 deep from below).",
     "Toolsetter clearance R7.2. Mill on the Carvera from 12 mm HDPE / 6061 (tapped=True), or print PETG 6 walls 50 %."
   ],
   "bore_test_coupons": [

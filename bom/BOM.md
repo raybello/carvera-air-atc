@@ -18,13 +18,13 @@ Machine-readable: [`phase1_bom.csv`](phase1_bom.csv). Prices are **rough CAD est
 | E5 | JST-SM 2.54 kit | 2-pin + 4-pin pairs (+crimper) | 1 | Amazon.ca | ? | (PH alt: **C157952** PHR-6 + **C111515** SPH-002T) |
 | F4 | M3 countersunk | 10–16 mm | 16 | Home Depot / Fastenal | ✓ | ✗ |
 | F5 | M6×20 SHCS | ISO 4762 | 1 (+1 in F8) | Home Depot / Canadian Tire | ✓ | ✗ |
-| F8 | **Stock-bed adapter hardware** | 3× **M6×30** SHCS (originals are M6×23), 2× M6 hex nuts, M6×16 + M6×20, 4 mm dowel pin | 1 set | Home Depot / Fastenal | ✓ | ✗ |
+| F8 | **Stock-bed adapter hardware** | 3× **M5×30 DIN 7984 low-head** (stock = M5 low-head ~M5×20), 2× M6 hex nuts, M6×16 + M6×20, 4 mm dowel pin | 1 set | Fastenal Ottawa / Amazon.ca (low-head M5); rest Home Depot | ✓ verify low-head stock | ✗ |
 
 ## Probably have (check inventory)
 M4×12 ×4, M4×10 ×2, M3×10 ×2 (your M3/M4 kit) · 10×2 mm magnets ×3 (measure yours) · CA glue · 3-core wire · PETG / PETG-CF filament.
 
 ## Stock bed (your machine)
-`atc_bed_adapter`: print it in PETG first. Permanent version: 12 mm HDPE cutting board (IKEA / Dollarama / Canadian Tire) or 12 mm 6061 (Metal Supermarkets Ottawa). Hardware is line F8. Bed screws: buy **3× M6×30** (originals measured M6×23).
+`atc_bed_adapter`: print it in PETG first. Permanent version: 12 mm HDPE cutting board (IKEA / Dollarama / Canadian Tire) or 12 mm 6061 (Metal Supermarkets Ottawa). Hardware is line F8. Bed screws: buy **3× M5×30 DIN 7984 low-head** (stock ones are M5 low-head). Standard M5 socket caps won't fit: their 5 mm head is too tall for the counterbore.
 
 ## Your existing inventory: what's used
 | You own | Phase 1 role |

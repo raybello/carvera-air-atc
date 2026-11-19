@@ -21,7 +21,12 @@ for d in (STL, STEP):
 # Saunders Machine Works (SMW) Carvera Air plate drawing/STEP (which reuses the stock bed's
 # screws, dowel standoffs and outline) and from the upstream magazine STEP.
 BED_X, BED_Y = 306.0, 222.0
-BED_SCREWS = [(x, y) for x in (-142.5, -5.5, 129.5) for y in (-100.5, -6.75, 74.0)]  # 9x M6 SHCS
+BED_SCREWS = [(x, y) for x in (-142.5, -5.5, 129.5) for y in (-100.5, -6.75, 74.0)]  # 9x hold-down screws
+# Stock bed screws measured by owner (2026-11-19): M5 low-head cap screw (DIN 7984), 3 mm hex,
+# head Ø8.39 x 3.49, overall length ~23 mm (likely M5x20). MDF bed 15.0 mm thick.
+# Replacement: M5x30 DIN 7984 low-head (same type as stock). Counterbore 3.8 deep keeps a solid
+# 8.2 mm floor, 0.6 mm above the 7.6 mm-deep magazine nut pockets.
+BED_SCREW_CLEAR, BED_SCREW_CBORE, BED_SCREW_CBORE_DEPTH = 5.5, 9.6, 3.8
 BED_SCREWS_RIGHT = [(129.5, -100.5), (129.5, -6.75), (129.5, 74.0)]
 DOWELS = [(-145.5, -15), (-108, -58.5), (-57, -103.5), (-57, 30), (31.5, -58.5), (142, -15)]  # 4 mm pins
 TOOLSETTER = (135.44, 93.44)    # centre of the bed's back-right toolsetter notch
@@ -35,16 +40,16 @@ PODS = [(POD_X, 56.5 - 20 * i) for i in range(8)]  # T1 (back) .. T8 (front), pe
 
 
 # ---------------------------------------------------------------- 1. stock-bed adapter
-def bed_adapter(thickness=12.0, x0=116.0, nut_af=10.2, nut_depth=8.0, tapped=False):
+def bed_adapter(thickness=12.0, x0=116.0, nut_af=10.2, nut_depth=7.6, tapped=False):
     """Riser that puts the SMW-style magazine on the STOCK MDF bed, with NO new holes in the bed.
 
-    * Clamps down through the bed's own right-hand column of 3x M6 hold-down screws
-      (x=129.5; y=-100.5, -6.75, 74): swap them for screws `thickness` mm longer.
+    * Clamps down through the bed's own right-hand column of 3 M5 hold-down screws
+      (x=129.5; y=-100.5, -6.75, 74): replace the stock M5 low-head screws with M5x30 DIN 7984 (low head).
     * Locates on the stock 4 mm dowel position (142, -15).
     * Magazine bolts to 2x M6 at (140, 80) / (140, -100): captive M6 hex nuts in pockets
       from below (HDPE/MDF/PETG), or `tapped=True` -> 5.0 mm tap drill for M6 in 6061.
       Screws (12 mm adapter): back foot (4.5 mm flange) M6x16, front (11 mm flange) M6x20.
-      Nut sits 3-8 mm above the bed, so neither screw tip touches the MDF.
+      Nut sits 2.6-7.6 mm above the bed (front screw engages 4.6 mm); no screw tip touches the MDF.
     Model is in BED coordinates (origin = bed centre); CAM/slicer can re-zero it.
     """
     w, y0, y1 = BED_X / 2 - x0, -BED_Y / 2, NOTCH_Y
@@ -53,15 +58,19 @@ def bed_adapter(thickness=12.0, x0=116.0, nut_af=10.2, nut_depth=8.0, tapped=Fal
     # clearance for the toolsetter (r 7.2 around its axis)
     p = p.cut(cq.Workplane("XY").center(*TOOLSETTER).circle(7.2).extrude(thickness * 3, both=True))
     top = cq.Workplane("XY").workplane(offset=thickness)
-    # bed hold-down screws: 6.6 thru + 11 counterbore, heads sit 0.5 below the top
-    p = p.cut(cq.Workplane("XY").pushPoints(BED_SCREWS_RIGHT).circle(3.3).extrude(thickness))
-    p = p.cut(top.workplane(offset=-6.5).pushPoints(BED_SCREWS_RIGHT).circle(5.5).extrude(7))
+    # bed hold-down screws (M5): 5.5 thru + 9.6 x 3.8 counterbore; low head (3.5) sits 0.3 below top
+    p = p.cut(cq.Workplane("XY").pushPoints(BED_SCREWS_RIGHT).circle(BED_SCREW_CLEAR / 2).extrude(thickness))
+    p = p.cut(top.workplane(offset=-BED_SCREW_CBORE_DEPTH).pushPoints(BED_SCREWS_RIGHT)
+              .circle(BED_SCREW_CBORE / 2).extrude(BED_SCREW_CBORE_DEPTH + 1))
     # magazine screws
     if tapped:
         p = p.cut(cq.Workplane("XY").pushPoints(MAG_HOLES).circle(2.5).extrude(thickness))
     else:
         p = p.cut(cq.Workplane("XY").pushPoints(MAG_HOLES).circle(3.3).extrude(thickness))
-        p = p.cut(cq.Workplane("XY").pushPoints(MAG_HOLES).polygon(6, nut_af / 0.866).extrude(nut_depth))
+        # hex rotated 30 deg so a FLAT (not a corner) faces the neighbouring bed-screw counterbore
+        p = p.cut(cq.Workplane("XY").transformed(rotate=(0, 0, 30)).pushPoints(
+            [(x * 0.8660254 + y * 0.5, -x * 0.5 + y * 0.8660254) for x, y in MAG_HOLES])
+            .polygon(6, nut_af / 0.866).extrude(nut_depth))
     # dowel
     p = p.cut(cq.Workplane("XY").center(*DOWELS[-1]).circle(2.05).extrude(thickness))
     # engraved pod index marks (0.6 deep) so slot teaching starts close

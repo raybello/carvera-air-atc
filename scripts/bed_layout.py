@@ -29,7 +29,7 @@ ax.set_title("Stock Carvera Air bed (top view, origin = bed centre, +Y = back)")
 ax.text(0, 0, "+", ha="center", va="center", fontsize=14)
 ax.legend(loc="lower left", fontsize=8, framealpha=.95,
           handles=ax.patches[:1] + [ax.patches[-1 - 8 - 2 - 1], ax.patches[-1 - 8 - 2]] +
-          [Circle((0, 0), 1, fc="#555", label="9x M6 bed hold-down screws"),
+          [Circle((0, 0), 1, fc="#555", label="9x M5 low-head bed hold-down screws"),
            Circle((0, 0), 1, fc="#c33", label="4 mm dowel locations"),
            Circle((0, 0), 1, fc="#ff0", ec="k", label="Magazine M6 (nut trap)")])
 for lbl, xy in [("x=-142.5", (-142.5, 82)), ("x=-5.5", (-5.5, 82)), ("x=129.5", (129.5, 116))]:
@@ -55,7 +55,7 @@ az.annotate("T1 centre\n(140.5, 56.5)", P.PODS[0], (113, 40), fontsize=7, arrowp
 
 fig.text(0.01, 0.01,
          "VERIFY ON YOUR MACHINE BEFORE MAKING THE ADAPTER: right-column bed screw centres are 23.5 mm from the right edge and 10.5 / 104.25 / 185.0 mm "
-         "from the front edge.\nAdapter clamps through those 3 screws (replace stock M6x23 with M6x30), locates on the 4 mm dowel at (142,-15); "
+         "from the front edge.\nAdapter clamps through those 3 screws (replace stock M5 low-head with M5x30 DIN 7984), locates on the 4 mm dowel at (142,-15); "
          "magazine bolts into 2 captive M6 nuts at (140, 80) and (140, -100).\nSource of bed geometry: Saunders Machine Works Carvera Air plate drawing S1988 rev 2 "
          "(reuses stock screw/dowel positions). Magazine position: Warioo SMW install.", fontsize=8.5, va="bottom")
 out = pathlib.Path(__file__).resolve().parents[1] / "cad/custom/renders/stock_bed_layout.png"
