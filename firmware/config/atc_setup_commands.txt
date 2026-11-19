@@ -14,8 +14,10 @@ config-set sd epsilon_max_rate 3600
 config-set sd epsilon_acceleration 360
 config-set sd atc.homing_retract_mm 0
 config-set sd atc.action_mm 70
-config-set sd atc.safe_z_empty_mm -40
-config-set sd atc.safe_z_offset_mm 20
+# Warioo (SMW plate) values were: safe_z_empty_mm -40, safe_z_offset_mm 20.
+# THIS MACHINE (stock MDF 15 mm + 12 mm adapter = pods +9.22 mm higher):
+config-set sd atc.safe_z_empty_mm -30.8
+config-set sd atc.safe_z_offset_mm 30
 config-set sd atc.homing_max_travel_mm 360
 config-set sd atc.homing_rate_mm_s 45
 config-set sd atc.action_rate_mm_s 45
