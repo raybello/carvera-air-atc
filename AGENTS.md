@@ -23,7 +23,7 @@ Add automatic tool changing (ATC) to the owner's **Makera Carvera Air**:
 | 3 Product + content | ⚪ Not started | Goals in `docs/phase3/README.md` |
 
 ## ▶ Next actions for the owner (in order)
-1. **Measure Q1b** (2 min with calipers; it confirms the adapter fits) and answer Q2–Q5.
+1. Note the MDF thickness and bed-screw length (Q1c), and answer Q2–Q5. The adapter positions are verified, so it's OK to print.
 2. **Order the geared stepper today** (StepperOnline 17HS15-1584S-MG50; it's the critical path), then the rest of `bom/BOM.md`.
 3. Run `./scripts/fetch_upstream.sh` (already run once on this Mac). Print `cad/custom/stl/bore_test_coupons.stl` first, then the upstream parts (`docs/phase1/BUILD_PLAN.md` §2).
 4. Build the opto interface (`electronics/inverter/README.md`) and bench-test it.
@@ -34,7 +34,8 @@ Add automatic tool changing (ATC) to the owner's **Makera Carvera Air**:
 | # | Question | Answer |
 |---|---|---|
 | Q1 | Bed type: stock MDF / SMW fixture plate / Funssor? | **Stock MDF bed** (2026-11-19) |
-| Q1b | Stock MDF bed thickness + length of the right-column M6 bed screws; confirm screw centres 23.5 mm from right edge, 10.5/104.25/185 mm from front | _pending (measure)_ |
+| Q1b | Confirm right-column screw centres 23.5 mm from right edge, 10.5/104.25/185 mm from front | **Verified by owner to ±0.01 mm (2026-11-19)**: `atc_bed_adapter` geometry is final for printing |
+| Q1c | Stock MDF bed thickness + length of the right-column M6 bed screws (to buy screws +12 mm) | _pending_ |
 | Q2 | Is the AD5M nozzle hardened steel (for PETG-CF)? | _pending_ |
 | Q3 | Size of the owned circular magnets (need 10×2 ×3)? | _pending_ |
 | Q4 | Current firmware version; `model` output (record the number after CA1 → needed to revert) | _pending_ |
@@ -93,3 +94,4 @@ media/ marketing/ store/   ← Phase 3
 |---|---|---|
 | 2026-11-19 | Claude (Opus) | Set up the repo. Researched Instructables + Hackster (full text, 10 STEP files, tool-slot config, 18 photos). Converted and measured all upstream parts. Designed 5 original parts with dimensioned renders. Wrote the Phase 1 plan, BOM (LCSC-checked), firmware config, opto interface, Pico bench tester and licensing rules. |
 | 2026-11-19 | Claude (Opus) | Owner confirmed the stock MDF bed. Pulled the bed interface from the SMW plate CAD; redesigned `atc_bed_adapter` (clamps through bed screws, dowel located, captive nuts, toolsetter relief); added `stock_bed_layout.png`; updated the plan, BOM and firmware notes (Z offset, safe-Z). T1 = back. |
+| 2026-11-19 | Claude (Opus) | Owner verified the stock-bed screw positions to ±0.01 mm; the adapter is cleared for printing. |

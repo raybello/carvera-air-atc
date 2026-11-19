@@ -110,7 +110,7 @@ Warioo's magazine bolts into an SMW aluminium plate. Your stock MDF bed has no M
 - **Location:** a 4 mm pin through the adapter into the stock dowel position at **(142, −15)**.
 - **Magazine:** 2 captive **M6 hex nuts**, pressed into pockets from below **before** install, at (140, 80) and (140, −100), which is 180 mm apart. Use an **M6×16** in the back foot (4.5 mm flange) and an **M6×20** in the front (11 mm counterbored flange). Neither screw tip reaches the MDF.
 - **Toolsetter:** the back end is relieved (R7.2) around the toolsetter, just like the SMW plate.
-- **⚠ Verify first (2 min with calipers):** the right-column bed screw centres should be **23.5 mm from the right edge** and **10.5 / 104.25 / 185.0 mm from the front edge**. These come from the SMW plate drawing, which reuses the stock screw positions. If yours differ, change `BED_SCREWS_RIGHT` in `cad/custom/src/parts.py` and re-run it.
+- **✅ Verified on the owner's machine (±0.01 mm, 2026-11-19):** the right-column bed screw centres should be **23.5 mm from the right edge** and **10.5 / 104.25 / 185.0 mm from the front edge**. These come from the SMW plate drawing, which reuses the stock screw positions. If yours differ, change `BED_SCREWS_RIGHT` in `cad/custom/src/parts.py` and re-run it.
 - **Make it:** print it in PETG (6 walls, 50 % infill, ~2.5 h) for the first install. Then in Step 7 mill a permanent one from a 12 mm HDPE cutting board, or 6061 with `tapped=True` (tap M6, no nuts).
 - **Height:** the magazine sits 12 mm + (stock MDF top − SMW top) away from Warioo's numbers. **Re-teach every Z, and raise the ATC safe-Z values** before the first run (see `firmware/config/README.md`).
 
