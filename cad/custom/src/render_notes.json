@@ -1,0 +1,21 @@
+{
+  "atc_bed_adapter": [
+    "Stock-bed riser for the SMW magazine. 2x \u00d88 holes @ 180 mm pitch (Y) take M6 heat-set/press inserts,",
+    "or tap M6 if milled from 6061. 6x bed slots 6.6 wide x 22 long (X adjust \u00b18 mm), counterbored \u00d811 x 6.5 deep from top.",
+    "Engraved outline = magazine footprint 27 x 199.3. Mill from 12 mm HDPE / MDF / Al on the Carvera, or print PETG."
+  ],
+  "bore_test_coupons": [
+    "Print FIRST in the same filament/settings as the gears. Top row: \u00d813.9-14.3 (lever cylinder, BottomGear).",
+    "Bottom row: \u00d87.9-8.3 + 3.2 mm key (motor shaft, TopGear). Ticks 1-5 = smallest..largest.",
+    "Pick the snug press-fit; in OrcaSlicer set Quality > 'X-Y hole compensation' = (chosen - nominal)/2. Do NOT scale the gear (teeth would change)."
+  ],
+  "magazine_chip_cap": [
+    "Push-in cap for the \u00d811 M6 counterbores in the magazine. Print in TPU or PETG. Pull tab on top."
+  ],
+  "signal_board_box": [
+    "Holds a 30x20 perfboard (PC817 or 2N2222 inverter). Cable notches both ends, zip-tie channels under base."
+  ],
+  "signal_board_lid": [
+    "Snap-in lid for signal_board_box."
+  ]
+}

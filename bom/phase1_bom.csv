@@ -1,0 +1,26 @@
+id,item,spec,qty,status,preferred_source,ottawa_local_option,lcsc_part,backup_online,est_cost_cad,notes
+M1,Geared stepper motor,"NEMA17 50:1 planetary, 17HS15-1584S-MG50, 1.58 A/phase, body <=39 mm, 8 mm keyed shaft, gearbox 10 Nm",1,BUY,omc-stepperonline.com,None found - online only,n/a,Amazon.ca STEPPERONLINE store / ozrobotics.com,50,"CRITICAL PATH - order day 0. Body length must be <=39 mm to fit the spindle housing."
+M2,Timing belt,"HTD 5M, 425 mm pitch length, 85 T, 9 mm wide (Gates 425-5M-09)",1,BUY,Ottawa industrial PT distributor (call: Motion / Applied Industrial / BDI),"Call ahead - standard Gates part, usually next-day order-in",n/a,zoro.com / Amazon.ca '425-5M-09',20,"10 mm width does NOT fit; 9 mm is the Gates standard width."
+M3,Compression springs,"wire 0.4 mm, OD 4 mm, free length 17 mm",24,BUY,Amazon.ca spring assortment (Prime),Lee Valley / Princess Auto assortments - verify size,n/a,leespring.com (stock springs),15,3 per pod x 8 pods (24 x Ø4.7 spring bores in magazine). Buy 30+ for spares.
+M4,Neodymium disc magnets,10 x 2 mm,3,HAVE?,User inventory (check size),Lee Valley (rare-earth magnets),n/a,Amazon.ca,0,Cover retention. Measure your magnets; if not 10x2 we adjust the pocket in the cover.
+M5,M3 heat-set inserts,"M3 x ~5.7 L x 4.6 OD (std 3D-print insert)",8,BUY,Amazon.ca insert kit,Canada Computers / Home Depot - verify,n/a,Amazon.ca,12,Motor mount. Kit with soldering tip.
+M6,Super glue,CA glue,1,HAVE?,Canadian Tire / Dollarama,Any,n/a,,4,Cover halves + magnets
+F1,Socket head cap screw,M4x12 ISO 4762,4,HAVE?,User inventory,Home Depot / Canadian Tire / Fastenal Ottawa,n/a,,3,Stepper to motor mount
+F2,Socket head cap screw,M4x10 ISO 4762,2,HAVE?,User inventory,Home Depot / Canadian Tire / Fastenal Ottawa,n/a,,2,ATC sensor bracket
+F3,Socket head cap screw,M3x10 ISO 4762,2,HAVE?,User inventory,Home Depot / Canadian Tire,n/a,,1,Microswitch
+F4,Countersunk screw,M3 x 10-16 ISO 10642,16,BUY,Home Depot / Fastenal,Home Depot / Fastenal Ottawa,n/a,Amazon.ca kit,6,Magazine pod ring clamps etc.
+F5,Socket head cap screw,M6x20 ISO 4762,3,BUY,Home Depot / Canadian Tire,Home Depot / Canadian Tire,n/a,,3,1x pulley-to-lever cylinder; 2x magazine-to-bed
+F6,Countersunk screw (optional),M3x12,4,OPTIONAL,Home Depot,Home Depot,n/a,,2,Front plate
+F7,Countersunk screw (optional),M3x10,3,OPTIONAL,Home Depot,Home Depot,n/a,,1,TopGear v2 milled inlay
+F8,Adapter: M6 inserts + bed screws,"2x M6 press/heat insert (8 mm OD) + 6x M6x16 SHCS (or M5 - match your bed)",1,ONLY IF STOCK BED,Home Depot / Fastenal,Home Depot / Fastenal Ottawa,n/a,Amazon.ca,10,Only for cad/custom atc_bed_adapter (stock MDF bed). Skip if you own an SMW plate.
+E1,Roller-lever microswitch,"SPDT, 20x10x6 mm body, ~9.4-9.5 mm hole pitch (Omron SS-5GL2 or KW11 clone)",1,BUY,LCSC C87120 (Omron SS-5GL2),Amazon.ca KW11/KW12 roller switch pack (Prime),C87120,Digi-Key SS-5GL2,3,Clamp-state sensor. Wire COM + NC (fail-safe). Drill mounting holes to 3 mm.
+E2,Stepper driver module,"DRV8825 Pololu-footprint carrier",1,BUY,Amazon.ca DRV8825 5-pack,Canada Computers / Memory Express - verify stock,"C81582 (IC only, not a module)",Digi-Key Pololu #2133,15,Goes in the spare driver socket on the Carvera Air board. VRef ~0.55 V for 1.58 A motor.
+E3,Laser tool-presence sensor,"M12 diffuse laser photoelectric, 24 V, NPN (e.g. GTRIC LS05-S12N1)",1,BUY,AliExpress GTRIC store (2-3 wk),None - online,n/a,Amazon.ca 'M12 laser photoelectric sensor NPN 24V',35,Detects tool in spindle like the C1. Optional for first spin-up (firmware atc.detector.enable false) but strongly recommended.
+E4,Signal interface (24 V -> MCU safe),"PC817C opto + 4.7 k (1/4 W) + perfboard  OR  2N2222 + 10 k + 100 k",1,BUY,LCSC C20612594 (PC817C DIP-4),Any PC817 module on Amazon.ca,C20612594,"Amazon.ca '1-channel PC817 optocoupler module'",5,See electronics/inverter/README.md. Only needed if sensor outputs 24 V on signal line.
+E5,JST SM 2.54 connector kit,"2-pin + 4-pin male/female, with crimper if you lack one",1,BUY,Amazon.ca JST-SM kit,Canada Computers - verify,n/a,,25,"Alt: native JST-PH 6p on motor: LCSC PHR-6 C157952 + SPH-002T-P0.5S C111515"
+E6,3-core cable,"~0.5 m, 22-24 AWG",1,HAVE,User inventory,,n/a,,0,Microswitch + sensor leads
+P1,Filament - structural,"PETG-CF (needs hardened nozzle) or plain PETG",1 kg,BUY?,Canada Computers Ottawa (filament aisle) - verify,Canada Computers / Amazon.ca,n/a,Amazon.ca Tinmorry PETG-CF,35,Upstream used Tinmorry PETG-CF. Use plain PETG if AD5M nozzle is not hardened.
+P2,Filament - pods,PETG or PLA (contrasting colour),~100 g,HAVE?,User inventory,,n/a,,0,Tool pods inside magazine
+S1,Machinable stock (CNC-made parts),"12-19 mm HDPE cutting board; 4-6 mm 6061 plate; 12 mm MDF",1,BUY,IKEA / Dollarama / Canadian Tire (HDPE boards); Metal Supermarkets Ottawa (6061),Yes - all local,n/a,,25,"For: bed adapter, TopGear milled keyway inlay (4 mm Al), magazine v1 machined"
+T1,Tools,"3 mm drill, crimper, multimeter (VRef), M6 tap (only if Al adapter)",1,HAVE?,User inventory,Princess Auto / Canadian Tire,n/a,,0,
+X1,UNUSED in Phase 1,"TB6600 x2, 50 mm linear stage, AS5600 x2, Pi Pico",-,HAVE,User inventory,,,,0,"TB6600+Pico = off-machine bench tester for motor/belt (optional). AS5600 = Phase 2 clamp-angle sensing. Linear stage: no role yet."

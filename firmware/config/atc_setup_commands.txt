@@ -1,0 +1,33 @@
+# Carvera Air ATC: one-time MDI setup (Community Firmware >= 2.1.0c-RC1)
+# Source: Warioo, "Carvera Air ATC Mod" (Instructables), Step 9 + 2026-04-05 update.
+# Paste ONE line at a time into the Controller MDI. Lines starting with # are comments.
+
+# 1) RECORD THIS FIRST: needed to revert. Output looks like "model = CA1, 2, 1, 3125"
+#    -> write the number after "CA1" into AGENTS.md (Open questions / machine facts).
+model
+
+# 2) Tell the machine it has an ATC (revert: fset func <your original number>, e.g. 2)
+fset func 5
+
+# 3) ATC axis + homing/action parameters
+config-set sd epsilon_max_rate 3600
+config-set sd epsilon_acceleration 360
+config-set sd atc.homing_retract_mm 0
+config-set sd atc.action_mm 70
+config-set sd atc.safe_z_empty_mm -40
+config-set sd atc.safe_z_offset_mm 20
+config-set sd atc.homing_max_travel_mm 360
+config-set sd atc.homing_rate_mm_s 45
+config-set sd atc.action_rate_mm_s 45
+
+# 4) Tool-presence (laser) sensor on input 0.21, inverted (!) with pull-up (^). Needs fw >= 2.1.0
+#    If the sensor reads backwards after building the interface board, use 0.21^ (drop the !).
+config-set sd atc.detector.detect_pin 0.21!^
+# Only on dev builds >= 2026-03-08. Use false ONLY for first dry-runs without a sensor:
+# config-set sd atc.detector.enable true
+
+# 5) Main button long-press = clamp/unclamp current tool (handy for loading tools)
+config-set sd main_button_long_press_enable ToolChange
+config-set sd main_button_long_press_time 1200
+
+# 6) Copy firmware/config/custom_tool_slots.txt to the SD card root, then reboot.
