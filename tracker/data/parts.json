@@ -1,0 +1,136 @@
+{
+  "custom": [
+    {
+      "id": "atc_bed_adapter",
+      "name": "Stock-bed adapter",
+      "qty": 1,
+      "material": "PETG (print) \u2192 HDPE / 6061 (mill)",
+      "settings": "6 walls, 50 % infill, nut pockets down",
+      "why": "Puts the magazine on the stock MDF bed. Clamps through 3 bed screws; no drilling."
+    },
+    {
+      "id": "bore_test_coupons",
+      "name": "Bore test coupons",
+      "qty": 1,
+      "material": "Same as gears",
+      "settings": "Same settings as the gears",
+      "why": "Dial in 14.06 and 8.1 mm bores with X-Y hole compensation before printing gears."
+    },
+    {
+      "id": "magazine_chip_cap",
+      "name": "Magazine chip cap",
+      "qty": 2,
+      "material": "TPU or PETG",
+      "settings": "100 % infill",
+      "why": "Keeps chips out of the magazine's \u00d811 screw counterbores."
+    },
+    {
+      "id": "signal_board_box",
+      "name": "Signal board box",
+      "qty": 1,
+      "material": "PETG",
+      "settings": "3 walls",
+      "why": "Holds the PC817 sensor interface board."
+    },
+    {
+      "id": "signal_board_lid",
+      "name": "Signal board lid",
+      "qty": 1,
+      "material": "PETG",
+      "settings": "3 walls",
+      "why": "Snap-in lid for the signal box."
+    }
+  ],
+  "upstream": [
+    {
+      "id": "up-motormount",
+      "name": "MotorMount",
+      "size": "61 \u00d7 69.5 \u00d7 53",
+      "qty": 1,
+      "material": "PETG-CF / PETG",
+      "settings": "Supports on build plate only",
+      "file": "MotorMount"
+    },
+    {
+      "id": "up-topgear",
+      "name": "TopGear_v2_3DPrint",
+      "size": "\u00d840 \u00d7 14.4",
+      "qty": 1,
+      "material": "PETG-CF",
+      "settings": "6 walls, 100 %",
+      "file": "TopGear_v2_3DPrint"
+    },
+    {
+      "id": "up-bottomgear",
+      "name": "BottomGear",
+      "size": "\u00d842 \u00d7 22.6",
+      "qty": 1,
+      "material": "PETG-CF",
+      "settings": "6 walls, 100 %",
+      "file": "BottomGear"
+    },
+    {
+      "id": "up-sensormount",
+      "name": "ATCSensorMount",
+      "size": "19 \u00d7 38 \u00d7 64",
+      "qty": 1,
+      "material": "PETG-CF",
+      "settings": "Flat side down",
+      "file": "ATCSensorMount"
+    },
+    {
+      "id": "up-magazine",
+      "name": "SMW_atcMagazine_v3 body",
+      "size": "27 \u00d7 199.3 \u00d7 59.5",
+      "qty": 1,
+      "material": "PETG-CF",
+      "settings": "Supports; own plate",
+      "file": "SMW_atcMagazine_v3"
+    },
+    {
+      "id": "up-pods",
+      "name": "Magazine pods (2 pcs each)",
+      "size": "\u00d816.6 \u00d7 9.4",
+      "qty": 8,
+      "material": "PETG / PLA",
+      "settings": "Contrast colour",
+      "file": "SMW_atcMagazine_v3"
+    },
+    {
+      "id": "up-lasermount",
+      "name": "SensorMount_GTRIC_M5",
+      "size": "55 \u00d7 48 \u00d7 97",
+      "qty": 1,
+      "material": "PETG",
+      "settings": "As designed",
+      "file": "SensorMount_GTRIC_M5"
+    },
+    {
+      "id": "up-cover",
+      "name": "Cover (2 halves)",
+      "size": "210 \u00d7 69 \u00d7 22 (long half)",
+      "qty": 1,
+      "material": "PETG",
+      "settings": "No brim; 210 mm side straight",
+      "file": "Cover"
+    },
+    {
+      "id": "up-frontplate",
+      "name": "Frontplate (optional)",
+      "size": "61 \u00d7 46.5 \u00d7 7.5",
+      "qty": 1,
+      "material": "Any",
+      "settings": "Flat",
+      "file": "Frontplate"
+    },
+    {
+      "id": "up-inlay",
+      "name": "TopGear_v2_milled_keyway",
+      "size": "\u00d828 \u00d7 4",
+      "qty": 1,
+      "material": "6061 (milled)",
+      "settings": "Mill on the Carvera",
+      "file": "TopGear_v2_milled_keyway"
+    }
+  ]
+}

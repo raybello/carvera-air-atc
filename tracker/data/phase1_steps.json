@@ -1,0 +1,73 @@
+{
+  "_note": "Stable ids: NEVER rename an id once published (the tracker stores done-state by id). Add new ids instead.",
+  "groups": [
+    {"id": "s0", "title": "Answer setup questions", "ref": "docs/phase1/BUILD_PLAN.md#step-0", "items": [
+      {"id": "s0-bed", "text": "Bed type confirmed: stock MDF (15.0 mm), M5 low-head bed screws", "done_default": true},
+      {"id": "s0-bedpos", "text": "Right-column bed screw positions verified (23.5 / 10.5 / 104.25 / 185.0 mm)", "done_default": true},
+      {"id": "s0-nozzle", "text": "Check whether the AD5M nozzle is hardened steel (PETG-CF needs it)"},
+      {"id": "s0-magnets", "text": "Measure your circular magnets (cover needs 3 × 10 × 2 mm)"},
+      {"id": "s0-fw", "text": "Run `version` and `model` in MDI; record the number after CA1 (needed to revert)"},
+      {"id": "s0-4th", "text": "Check for a spare DRV8825 or 4th-axis driver"}
+    ]},
+    {"id": "s1", "title": "Order parts", "ref": "bom/BOM.md", "items": [
+      {"id": "s1-motor", "text": "Order the geared stepper 17HS15-1584S-MG50 (critical path)"},
+      {"id": "s1-sensor", "text": "Order the M12 24 V NPN laser sensor"},
+      {"id": "s1-amazon", "text": "Amazon.ca basket: DRV8825, springs, JST-SM kit, M3 inserts, roller switch, PC817"},
+      {"id": "s1-belt", "text": "Call an Ottawa distributor for Gates 425-5M-09 (or order online)"},
+      {"id": "s1-hw", "text": "Hardware store: M5×30 low-head ×3, M6 nuts ×2, M6×16, M6×20 ×2, M3 countersunk ×16, M4×10/12, 4 mm pin, CA glue"},
+      {"id": "s1-stock", "text": "Machinable stock: 12 mm HDPE board, 4–6 mm 6061 offcut"}
+    ]},
+    {"id": "s2", "title": "Print parts", "ref": "docs/phase1/BUILD_PLAN.md#step-2", "items": [
+      {"id": "s2-fetch", "text": "Run ./scripts/fetch_upstream.sh (upstream STEP files)", "done_default": true},
+      {"id": "s2-coupon", "text": "Print bore_test_coupons and pick the hole compensation for 14.06 and 8.1 bores"},
+      {"id": "s2-adapter", "text": "Print atc_bed_adapter (PETG, 6 walls, 50 %)"},
+      {"id": "s2-gears", "text": "Print TopGear_v2 and BottomGear (6 walls, 100 % infill)"},
+      {"id": "s2-mount", "text": "Print MotorMount (supports on build plate only) and ATCSensorMount"},
+      {"id": "s2-mag", "text": "Print magazine body + 8 pods (16 parts)"},
+      {"id": "s2-misc", "text": "Print SensorMount, Cover halves, chip caps ×2, signal box + lid"}
+    ]},
+    {"id": "s3", "title": "Bench prep", "ref": "docs/phase1/BUILD_PLAN.md#step-3", "items": [
+      {"id": "s3-inserts", "text": "Press 8 × M3 heat inserts into MotorMount"},
+      {"id": "s3-switch", "text": "Drill microswitch holes to 3 mm; wire COM + NC; crimp 2-pin JST-SM"},
+      {"id": "s3-opto", "text": "Build the PC817 interface board and bench-test it with 24 V"},
+      {"id": "s3-motorconn", "text": "Check motor coil pairs; crimp the motor connector"},
+      {"id": "s3-pods", "text": "Load 24 springs and pods; every pod springs back freely"},
+      {"id": "s3-face", "text": "Face the magazine bottom flat on the Carvera"},
+      {"id": "s3-nuts", "text": "Press 2 × M6 nuts into the adapter pockets"},
+      {"id": "s3-bench", "text": "(Optional) TB6600 + Pico bench test of motor and belt"}
+    ]},
+    {"id": "s4", "title": "Install on the machine", "ref": "docs/phase1/BUILD_PLAN.md#step-4", "items": [
+      {"id": "s4-gear", "text": "Swap the manual lever for BottomGear (cam top-right, M6×20)"},
+      {"id": "s4-motor", "text": "Key + TopGear on the motor; motor on mount (4 × M4×12)"},
+      {"id": "s4-head", "text": "Remove the spindle top cover; pull out the ATC motor and ATC sensor cables"},
+      {"id": "s4-belt", "text": "Fit the belt and tension the mount with the 4 × M3 cover screws"},
+      {"id": "s4-switch", "text": "Mount the switch bracket (2 × M4×10), lowest position"},
+      {"id": "s4-driver", "text": "Fit the DRV8825 in the spare socket; set VRef ≈ 0.55 V"},
+      {"id": "s4-adapter", "text": "Fit the adapter: 4 mm pin at (142, −15), 3 × M5×30 low-head"},
+      {"id": "s4-mag", "text": "Bolt the magazine down: M6×16 back, M6×20 front; fit chip caps"},
+      {"id": "s4-laser", "text": "Mount the laser sensor; wire through the opto to EXT yellow (0.21)"}
+    ]},
+    {"id": "s5", "title": "Firmware", "ref": "firmware/config/atc_setup_commands.txt", "items": [
+      {"id": "s5-install", "text": "Install Community Firmware + Controller (≥ 2.1.0c-RC1)"},
+      {"id": "s5-model", "text": "Run `model` and record the number after CA1"},
+      {"id": "s5-cmds", "text": "Paste all setup commands (safe-Z already raised for this machine)"},
+      {"id": "s5-slots", "text": "Copy custom_tool_slots.txt to the SD card root and reboot"}
+    ]},
+    {"id": "s6", "title": "Calibrate and test", "ref": "docs/phase1/TEST_CHECKLIST.md", "items": [
+      {"id": "s6-power", "text": "Power-on: no alarm; long-press clamps and unclamps; no skipped steps"},
+      {"id": "s6-switch", "text": "Switch bracket trips exactly at end of unclamp; unplugged switch alarms"},
+      {"id": "s6-laser", "text": "Laser ignores the lid, sees a tool; input 0.21 polarity right"},
+      {"id": "s6-teach", "text": "Teach T1 (back) and T8 (front); check the 20.00 mm pitch"},
+      {"id": "s6-dry", "text": "Dry runs: T1→T8→T1 ×10, no spindle rotation"},
+      {"id": "s6-missing", "text": "Missing-tool test: sensor stops the change"},
+      {"id": "s6-50", "text": "50 consecutive changes at full speed, zero faults"},
+      {"id": "s6-cut", "text": "Real 3-tool job completes"}
+    ]},
+    {"id": "s7", "title": "Machine its own parts", "ref": "docs/phase1/BUILD_PLAN.md#step-7", "items": [
+      {"id": "s7-adapter", "text": "Mill a permanent adapter from 12 mm HDPE or 6061"},
+      {"id": "s7-inlay", "text": "Mill the TopGear keyway inlay from 4 mm 6061"},
+      {"id": "s7-mag", "text": "Trial: machined magazine body (Phase 2 candidate)"},
+      {"id": "s7-log", "text": "Log hours, costs, reprints and annoyances in the Log tab"}
+    ]}
+  ]
+}

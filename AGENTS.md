@@ -91,6 +91,20 @@ media/ marketing/ store/   ← Phase 3
 5. No Claude/AI attribution in commits or PRs.
 6. End every session by updating: Status board, Next actions, Open questions, Decisions, and the Session log below.
 
+## Project tracker artifact (owner's live dashboard)
+- **URL:** https://claude.ai/artifact/NdJXdfvcmZJ89E6Wkyipub (private to the owner). Tabs: Overview, Build steps, Parts to buy, Print files, Firmware, Phase 2, Phase 3, Log.
+- **Source:** `tracker/template.html` + `tracker/data/*.json` (steps, parts, phase scaffolds) + repo files (BOM CSV, firmware, CAD). Build with `python3 tracker/build.py` → `tracker/dist/` (gitignored: it contains upstream files). The supporting-files map is written to `tracker/dist_files.json`.
+- **Publish/update:** Artifact tool, `url` = the URL above, `file_path` = `tracker/dist/index.html`, `root` = `tracker/dist`, `files` = contents of `tracker/dist_files.json`. Omit `capabilities` on redeploys (it keeps `db` + `downloads`). In a new session, `read` the artifact first.
+- **Owner data lives in the artifact DB** (survives republishes). Read it with the ArtifactData tool at every checkpoint:
+  - `state/checks` → `{items: {<stepId>: {done, at}}}` (Phase 1 steps, Phase 2 goals, Phase 3 deliverables)
+  - `bom/<BOM id>` → `{status, price (CAD), vendor, ordered, eta, received, notes}`. Delivery days = received − ordered
+  - `parts/<part id>` → `{status: todo|printing|printed|installed|reprint}`
+  - `log/<id>` → `{date, phase, kind: milestone|feedback|issue|reprint|purchase|note, hours, cost, text}`
+  - `shots/<shot id>` → `{status}` · `notes/<section id>` → `{text}` · `product/listing` → Phase 3 listing fields
+- **Ids are stable:** never rename a step, BOM, part or shot id (the DB keys on them). Add new ids instead.
+- **Checkpoint routine:** read the DB → fold prices, delivery times and feedback into BOM.md, BUILD_LOG.md and the Phase 2/3 docs → update `tracker/data/*.json` for new phase content → rebuild → republish → commit.
+- **File transport:** the host serves no .step/.stl/.zip, so STEP ships as `.step.txt` and STL as base64 chunks (`.b64.N.txt`, ≤12 MB each). The page rebuilds a .zip in the browser with JSZip and saves it through the `downloads` capability.
+
 ## Session log
 | Date | Agent | Summary |
 |---|---|---|
@@ -99,3 +113,4 @@ media/ marketing/ store/   ← Phase 3
 | 2026-11-19 | Claude (Opus) | Owner verified the stock-bed screw positions to ±0.01 mm; the adapter is cleared for printing. |
 | 2026-11-19 | Claude (Opus) | Recorded MDF = 15.0 mm; computed the +9.22 mm Z offset; updated the slot file comments and setup commands. |
 | 2026-11-19 | Claude (Opus) | Owner measured the bed screw: M5 low-head. Adapter holes resized to M5 and nut pockets re-clocked (flat toward the counterbore, 7.6 deep); replacement M5×30 DIN 7984; docs and drawings updated. |
+| 2026-11-19 | Claude (Opus) | Built and published the project tracker artifact (db + downloads): BOM order tracking (price, vendor, ordered/ETA/received), step checklists, custom + upstream part downloads, firmware with copy buttons, Phase 2/3 scaffolds, log. Seeded 2 log entries. |

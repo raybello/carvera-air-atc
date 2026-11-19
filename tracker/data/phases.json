@@ -1,0 +1,52 @@
+{
+  "phase2": {
+    "title": "Polish and optimize",
+    "status": "Not started. Waits for Phase 1 exit and your go-ahead.",
+    "sections": [
+      {"id": "p2-feedback", "title": "Build feedback", "body": "Pulled live from Log entries tagged Feedback, Issue or Reprint. Every one becomes a design input.", "auto": "log:feedback"},
+      {"id": "p2-cost", "title": "Prototype cost and lead times", "body": "Calculated from actual BOM prices and order → received dates. The basis for the kit cost model.", "auto": "bom:cost"},
+      {"id": "p2-goals", "title": "Design goals", "checklist": [
+        {"id": "p2-g-cleanroom", "text": "Clean-room CAD for every part (no upstream geometry)"},
+        {"id": "p2-g-beds", "text": "Mounts for stock bed, SMW and Funssor"},
+        {"id": "p2-g-machined", "text": "Magazine machinable on the Carvera (HDPE / Delrin / Al)"},
+        {"id": "p2-g-pcb", "text": "One ATC I/O PCB (opto input, switch or AS5600, keyed connectors)"},
+        {"id": "p2-g-harness", "text": "Pre-made harnesses: no crimping for buyers"},
+        {"id": "p2-g-install", "text": "Install under 60 minutes, no cutting"},
+        {"id": "p2-g-cost", "text": "Cost model at 10 / 50 / 200 units"}
+      ]},
+      {"id": "p2-decisions", "title": "Open design decisions", "body": "Microswitch vs AS5600 clamp sensing. Printed vs machined magazine. Onboard driver or not. Kit vs assembled."}
+    ]
+  },
+  "phase3": {
+    "title": "Product, store and content",
+    "status": "Not started.",
+    "sections": [
+      {"id": "p3-listing", "title": "Product page data", "body": "Fields for the voltpak.ca Accessories listing. Filled in as the kit firms up.", "fields": [
+        {"id": "name", "label": "Product name"}, {"id": "tagline", "label": "Tagline"}, {"id": "price", "label": "Price (CAD)"},
+        {"id": "inbox", "label": "In the box"}, {"id": "compat", "label": "Compatibility"}, {"id": "specs", "label": "Key specs"},
+        {"id": "install", "label": "Install time"}, {"id": "ship", "label": "Ships in"}
+      ]},
+      {"id": "p3-shots", "title": "B-roll shot list", "body": "Record these as you build. Each one feeds the promo video, tech demo, YouTube build video and social cutdowns.", "shots": [
+        {"id": "sh-unbox", "text": "Unboxing: kit laid out, top-down", "use": "Unboxing, IG"},
+        {"id": "sh-print", "text": "Parts printing: timelapse of the magazine", "use": "Build video, X"},
+        {"id": "sh-mill", "text": "Carvera milling its own adapter", "use": "Hook shot, viral ad"},
+        {"id": "sh-install-gear", "text": "Lever out, gear in: macro close-up", "use": "Build guide"},
+        {"id": "sh-belt", "text": "Belt and motor mount going in", "use": "Build guide"},
+        {"id": "sh-wiring", "text": "Wiring the sensor board", "use": "Tech demo"},
+        {"id": "sh-first", "text": "First automatic tool change (reaction)", "use": "Viral ad, YouTube"},
+        {"id": "sh-8tools", "text": "T1→T8 run, wide and slow-mo", "use": "Tech demo, IG reel"},
+        {"id": "sh-job", "text": "Real 3-tool job start to finish", "use": "YouTube, product page"},
+        {"id": "sh-buy", "text": "Screen capture: buying on voltpak.ca", "use": "Ad end card"}
+      ]},
+      {"id": "p3-deliverables", "title": "Deliverables", "checklist": [
+        {"id": "p3-d-guide", "text": "Build guide (web + PDF)"},
+        {"id": "p3-d-fw", "text": "Firmware and config bundle"},
+        {"id": "p3-d-photos", "text": "Product photos and renders"},
+        {"id": "p3-d-listing", "text": "voltpak.ca Accessories listing live"},
+        {"id": "p3-d-hyperframes", "text": "HyperFrames promo video"},
+        {"id": "p3-d-social", "text": "YouTube, Instagram and X cutdowns"},
+        {"id": "p3-d-faq", "text": "Support FAQ"}
+      ]}
+    ]
+  }
+}

@@ -1,0 +1,548 @@
+<title>Carvera Air ATC Tracker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky machine-panel header + tab rail; each tab is one working view (tables, checklists, file cards). */
+:root{
+  --bg:#eef0f3; --surface:#ffffff; --sunk:#f6f7f9; --ink:#15181d; --muted:#5b6370; --line:#d6dae1;
+  --accent:#9a6b06; --accent-fill:#e3ad2f; --accent-soft:#f7ecd2;
+  --ok:#1d7f48; --ok-soft:#dcf1e4; --warn:#b4530a; --warn-soft:#fbe8d6; --bad:#b42323; --bad-soft:#f8dddd; --info:#2c5d9e; --info-soft:#dfe8f5;
+  --f-display:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1216; --surface:#171b21; --sunk:#12161b; --ink:#e6e9ee; --muted:#98a1ae; --line:#2a3038;
+  --accent:#e8bd52; --accent-fill:#e3ad2f; --accent-soft:#3a3018;
+  --ok:#55c98a; --ok-soft:#173326; --warn:#f0a058; --warn-soft:#3a2614; --bad:#f07a7a; --bad-soft:#3a1a1a; --info:#86b0ea; --info-soft:#18273b;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --surface:#171b21; --sunk:#12161b; --ink:#e6e9ee; --muted:#98a1ae; --line:#2a3038;
+  --accent:#e8bd52; --accent-fill:#e3ad2f; --accent-soft:#3a3018;
+  --ok:#55c98a; --ok-soft:#173326; --warn:#f0a058; --warn-soft:#3a2614; --bad:#f07a7a; --bad-soft:#3a1a1a; --info:#86b0ea; --info-soft:#18273b;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:.01em}
+h1{font-size:1.55rem;font-weight:700}
+h2{font-size:1.35rem;font-weight:700}
+h3{font-size:1.08rem;font-weight:600}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.eyebrow{font:600 .72rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+a{color:var(--info)}
+:focus-visible{outline:2px solid var(--accent-fill);outline-offset:2px}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .row{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;padding-block:12px 8px}
+.brand{display:flex;gap:12px;align-items:center;min-width:0}
+.mark{width:34px;height:34px;flex:none;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;position:relative}
+.mark::before,.mark::after{content:"";position:absolute;background:var(--ink)}
+.mark::before{width:2px;height:22px}.mark::after{height:2px;width:22px}
+.mark i{width:10px;height:10px;border-radius:50%;background:var(--accent-fill);position:relative;z-index:1}
+.meter{display:flex;gap:10px;align-items:center;min-width:220px;flex:1;max-width:380px}
+.bar{flex:1;height:8px;border-radius:4px;background:var(--sunk);border:1px solid var(--line);overflow:hidden}
+.bar>b{display:block;height:100%;background:var(--accent-fill);transition:width .3s}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{font:600 .92rem var(--f-display);letter-spacing:.03em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:8px 12px 10px;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs a[aria-current="page"]{color:var(--ink);border-color:var(--accent-fill)}
+nav.tabs a:hover{color:var(--ink)}
+
+main{padding-block:22px 60px;display:grid;gap:22px}
+.banner{border:1px solid var(--warn);background:var(--warn-soft);color:var(--ink);padding:10px 14px;border-radius:var(--r);font-size:.9rem}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:14px;min-width:0}
+.panel-head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+.stat{display:grid;gap:4px;padding:14px;border:1px solid var(--line);border-radius:var(--r);background:var(--sunk)}
+.stat .v{font:600 1.6rem/1.1 var(--f-mono);font-variant-numeric:tabular-nums}
+.stat .s{font-size:.82rem;color:var(--muted)}
+
+.pill{display:inline-flex;align-items:center;gap:6px;font:500 .74rem/1 var(--f-mono);padding:4px 8px;border-radius:999px;border:1px solid var(--line);background:var(--sunk);white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.pill.ok{background:var(--ok-soft);border-color:transparent}.pill.ok::before{background:var(--ok)}
+.pill.warn{background:var(--warn-soft);border-color:transparent}.pill.warn::before{background:var(--warn)}
+.pill.info{background:var(--info-soft);border-color:transparent}.pill.info::before{background:var(--info)}
+.pill.acc{background:var(--accent-soft);border-color:transparent}.pill.acc::before{background:var(--accent-fill)}
+
+button,.btn{font:600 .85rem var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:var(--r);padding:7px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+button:hover{border-color:var(--muted)}
+button.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+button.ghost{border-color:transparent;background:transparent;padding:4px 8px;color:var(--muted)}
+button.ghost:hover{color:var(--ink)}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,select,textarea{font:inherit;font-size:.88rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:5px 7px;min-width:0;width:100%}
+textarea{min-height:80px;resize:vertical}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent-fill);flex:none;margin:2px 0 0}
+label.f{display:grid;gap:4px;font-size:.8rem;color:var(--muted)}
+
+/* checklists */
+.steps{display:grid;gap:14px}
+.step{border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.step>summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;padding:12px 16px}
+.step>summary::-webkit-details-marker{display:none}
+.step .num{font:700 1.05rem var(--f-mono);color:var(--accent);width:2.2em;flex:none}
+.step .t{flex:1;min-width:0}
+.step .count{font:500 .82rem var(--f-mono);color:var(--muted)}
+.mini{width:70px;height:6px;border-radius:3px;background:var(--sunk);border:1px solid var(--line);overflow:hidden;flex:none}
+.mini>b{display:block;height:100%;background:var(--ok)}
+ul.check{list-style:none;margin:0;padding:0 16px 12px;display:grid}
+ul.check li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px dashed var(--line)}
+ul.check li label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;flex:1;min-width:0}
+ul.check li.done .txt{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+ul.check .when{font:400 .75rem var(--f-mono);color:var(--muted);white-space:nowrap}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--sunk);border:1px solid var(--line);border-radius:3px;padding:0 4px}
+
+/* tables */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th{font:600 .72rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;background:var(--sunk);padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.bom td input,.bom td select{min-width:92px}
+.bom td.spec{min-width:220px;max-width:340px}
+.bom .id{font:600 .8rem var(--f-mono);color:var(--accent)}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+
+/* parts */
+.part{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;border:1px solid var(--line);border-radius:var(--r);padding:14px;background:var(--surface)}
+.part img{width:100%;border-radius:4px;border:1px solid var(--line);background:#fff}
+.part dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:.86rem}
+.part dt{color:var(--muted)}.part dd{margin:0}
+@media (max-width:700px){.part{grid-template-columns:1fr}}
+
+pre{margin:0;font:.8rem/1.55 var(--f-mono);background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:12px;overflow:auto;max-height:520px;white-space:pre}
+.cmds{display:grid;gap:4px}
+.cmd{display:flex;gap:8px;align-items:center;justify-content:space-between;background:var(--sunk);border:1px solid var(--line);border-radius:4px;padding:5px 6px 5px 10px}
+.cmd code{background:none;border:0;padding:0;overflow-x:auto;white-space:nowrap}
+.cmd-note{font-size:.82rem;color:var(--muted);padding:8px 2px 2px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);padding:8px 14px;border-radius:var(--r);font-size:.86rem;z-index:20;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.log-item{display:grid;gap:4px;padding:12px 0;border-top:1px solid var(--line)}
+.log-item:first-child{border-top:0}
+.log-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.empty{color:var(--muted);font-size:.9rem;padding:8px 0}
+.form{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
+.form .wide{grid-column:1/-1}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="row">
+      <div class="brand">
+        <span class="mark" aria-hidden="true"><i></i></span>
+        <div>
+          <h1>Carvera Air ATC</h1>
+          <div class="eyebrow" id="phaseLabel">Phase 1 · Prototype</div>
+        </div>
+      </div>
+      <div class="meter" title="Phase 1 checklist progress">
+        <span class="eyebrow">P1</span>
+        <span class="bar"><b id="p1bar" style="width:0%"></b></span>
+        <span class="mono small" id="p1pct">0%</span>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="main" aria-live="polite"></main>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script id="data" type="application/json">/*__DATA__*/null</script>
+<script>
+"use strict";
+const D = JSON.parse(document.getElementById("data").textContent);
+const TABS = [["overview","Overview"],["build","Build steps"],["bom","Parts to buy"],["files","Print files"],["firmware","Firmware"],["phase-2","Phase 2"],["phase-3","Phase 3"],["log","Log"]];
+const S = {checks:{}, bom:{}, parts:{}, log:[], shots:{}, notes:{}, listing:{}, ready:false, dbState:"connecting"};
+let db = null, downloads = null;
+const $ = (s, el=document) => el.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const md = t => esc(t).replace(/`([^`]+)`/g, "<code>$1</code>");
+const today = () => new Date().toISOString().slice(0,10);
+const money = n => (n==null||isNaN(n)) ? "–" : "$" + Number(n).toFixed(2);
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("on"),1800)}
+
+/* ---------- item catalogs ---------- */
+const P1_ITEMS = D.steps.flatMap(g => g.items.map(i => ({...i, group:g.id})));
+const P2_GOALS = (D.phases.phase2.sections.find(s=>s.checklist)||{checklist:[]}).checklist;
+const P3_DELIV = (D.phases.phase3.sections.find(s=>s.checklist)||{checklist:[]}).checklist;
+const DEFAULT_DONE = Object.fromEntries(P1_ITEMS.filter(i=>i.done_default).map(i=>[i.id,true]));
+const isDone = id => (S.checks[id] ? !!S.checks[id].done : !!DEFAULT_DONE[id]);
+function bomDefault(raw){
+  const s=(raw||"").toUpperCase();
+  if (s.startsWith("UNUSED")||s==="-") return "skip";
+  if (s.includes("?")) return "check";
+  if (s.startsWith("HAVE")) return "have";
+  if (s.startsWith("OPTIONAL")) return "optional";
+  if (s.startsWith("BUY")) return "tobuy";
+  return "check";
+}
+const BOM_STATUS = [["tobuy","To buy","warn"],["check","Check stock","info"],["ordered","Ordered","acc"],["received","Received","ok"],["have","Have it","ok"],["optional","Optional",""],["skip","Not needed",""]];
+const statusOf = r => (S.bom[r.id]?.status) || bomDefault(r.status);
+const PART_STATUS = [["todo","To print",""],["printing","Printing","acc"],["printed","Printed","info"],["installed","Installed","ok"],["reprint","Reprint","warn"]];
+const SHOT_STATUS = [["planned","Planned",""],["shot","Shot","info"],["edited","Edited","acc"],["used","Used","ok"]];
+const pillFor = (list, v) => { const s=list.find(x=>x[0]===v)||list[0]; return `<span class="pill ${s[2]}">${esc(s[1])}</span>`; };
+const opts = (list, v) => list.map(([k,l]) => `<option value="${k}"${k===v?" selected":""}>${esc(l)}</option>`).join("");
+
+/* ---------- persistence ---------- */
+const queues = {};
+function enqueue(key, fn){ queues[key]=(queues[key]||Promise.resolve()).then(fn).catch(e=>{console.error(e);toast(e?.code==="invalid_argument"?"You can view this tracker but not edit it.":"Couldn't save. Check your connection and try again.")}); return queues[key]; }
+const canWrite = () => !!db;
+function saveCheck(id, done){
+  S.checks = {...S.checks, [id]: {done, at: done ? new Date().toISOString() : null}};
+  renderAll();
+  if (!canWrite()) return;
+  const body = {items: S.checks};
+  enqueue("checks", () => db.doc("state/checks").set(body));
+}
+function saveDoc(col, id, patch){
+  const cur = {...(S[col][id]||{}), ...patch, updatedAt:new Date().toISOString()};
+  S[col] = {...S[col], [id]: cur};
+  renderAll();
+  if (!canWrite()) return;
+  enqueue(col+"/"+id, () => db.doc(col+"/"+id).set(cur));
+}
+function saveListing(patch){
+  S.listing = {...S.listing, ...patch};
+  if (!canWrite()) return;
+  const body = {...S.listing};
+  enqueue("product/listing", () => db.doc("product/listing").set(body));
+}
+
+/* ---------- metrics ---------- */
+function p1Progress(){ const done=P1_ITEMS.filter(i=>isDone(i.id)).length; return {done,total:P1_ITEMS.length,pct:Math.round(100*done/P1_ITEMS.length)}; }
+function bomStats(){
+  let est=0, actual=0, priced=0, open=0, ordered=0, received=0; const leads=[];
+  for (const r of D.bom){
+    const st=statusOf(r), b=S.bom[r.id]||{};
+    if (st==="skip") continue;
+    const e=parseFloat(r.est_cost_cad)||0;
+    if (["tobuy","check","ordered","received"].includes(st)) est+=e;
+    if (b.price!==undefined && b.price!=="" && !isNaN(parseFloat(b.price))){ actual+=parseFloat(b.price); priced++; }
+    if (st==="tobuy"||st==="check") open++;
+    if (st==="ordered") ordered++;
+    if (st==="received") received++;
+    if (b.ordered && b.received){ const d=(new Date(b.received)-new Date(b.ordered))/864e5; if(!isNaN(d)) leads.push({id:r.id,item:r.item,days:Math.round(d),vendor:b.vendor||""}); }
+  }
+  leads.sort((a,b)=>b.days-a.days);
+  const avg = leads.length ? leads.reduce((a,b)=>a+b.days,0)/leads.length : null;
+  return {est,actual,priced,open,ordered,received,leads,avg};
+}
+
+/* ---------- views ---------- */
+function vOverview(){
+  const p=p1Progress(), b=bomStats();
+  const next = P1_ITEMS.filter(i=>!isDone(i.id)).slice(0,6);
+  const lastLog = S.log.slice(0,3);
+  return `
+  <section class="grid g4">
+    <div class="stat"><span class="eyebrow">Phase 1 steps</span><span class="v">${p.done}/${p.total}</span><span class="s">${p.pct}% complete</span></div>
+    <div class="stat"><span class="eyebrow">Parts still to buy</span><span class="v">${b.open}</span><span class="s">${b.ordered} ordered · ${b.received} received</span></div>
+    <div class="stat"><span class="eyebrow">Spent so far</span><span class="v">${money(b.actual)}</span><span class="s">${b.priced} items priced · est. ${money(b.est)}</span></div>
+    <div class="stat"><span class="eyebrow">Avg delivery</span><span class="v">${b.avg==null?"–":b.avg.toFixed(1)+" d"}</span><span class="s">${b.leads.length?("slowest: "+esc(b.leads[0].item)):"log order + received dates"}</span></div>
+  </section>
+  <section class="grid g2">
+    <div class="panel">
+      <div class="panel-head"><h2>Next up</h2><a href="#build" class="small">All steps →</a></div>
+      ${next.length?`<ul class="check" style="padding:0">${next.map(liCheck).join("")}</ul>`:`<p class="empty">Phase 1 checklist complete. Log your findings, then start Phase 2.</p>`}
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>Phases</h2></div>
+      <div class="grid" style="gap:10px">
+        ${phaseRow("Phase 1","Prototype: replicate Warioo's mod on the stock bed", p.pct, "In progress","acc")}
+        ${phaseRow("Phase 2","Polish and optimize into a kit", pctOf(P2_GOALS), "Not started","")}
+        ${phaseRow("Phase 3","Product, store listing and content", pctOf(P3_DELIV), "Not started","")}
+      </div>
+      <div class="panel-head" style="margin-top:6px"><h3>Latest log</h3><a href="#log" class="small">Open log →</a></div>
+      ${lastLog.length?lastLog.map(logItem).join(""):`<p class="empty">No entries yet. Add one in the Log tab after each work session.</p>`}
+    </div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h2>Stock-bed layout</h2><span class="muted small">Verified on your machine · positions in mm from bed centre</span></div>
+    <img src="img/stock_bed_layout.png" alt="Top view of the stock Carvera Air bed showing the ATC adapter, magazine, 8 tool pods, bed screws and dowel positions" style="border-radius:4px;border:1px solid var(--line);background:#fff">
+  </section>`;
+}
+const pctOf = list => list.length ? Math.round(100*list.filter(i=>isDone(i.id)).length/list.length) : 0;
+const phaseRow = (n,d,pct,st,cls) => `<div style="display:grid;gap:6px"><div class="log-meta"><strong>${n}</strong><span class="pill ${cls}">${st}</span><span class="muted small" style="flex:1;min-width:0">${esc(d)}</span><span class="mono small">${pct}%</span></div><span class="bar"><b style="width:${pct}%"></b></span></div>`;
+
+function liCheck(i){
+  const d=isDone(i.id), at=S.checks[i.id]?.at;
+  return `<li class="${d?"done":""}"><label><input type="checkbox" data-check="${i.id}" ${d?"checked":""}><span class="txt">${md(i.text)}</span></label>${d&&at?`<span class="when">${at.slice(0,10)}</span>`:""}</li>`;
+}
+function vBuild(){
+  return `<section class="panel"><div class="panel-head"><h2>Build steps</h2><span class="muted small">Tick items as you finish them. Full detail is in <a href="${D.repo}/blob/main/docs/phase1/BUILD_PLAN.md" target="_blank" rel="noopener">BUILD_PLAN.md</a>.</span></div>
+  <div class="steps">${D.steps.map((g,ix)=>{
+    const done=g.items.filter(i=>isDone(i.id)).length, pct=Math.round(100*done/g.items.length);
+    const open = done<g.items.length;
+    return `<details class="step" ${open?"open":""}><summary><span class="num">${ix}</span><span class="t"><h3>${esc(g.title)}</h3></span><span class="mini"><b style="width:${pct}%"></b></span><span class="count">${done}/${g.items.length}</span></summary>
+    <ul class="check">${g.items.map(liCheck).join("")}</ul></details>`;}).join("")}</div></section>`;
+}
+
+let bomFilter="all";
+function vBom(){
+  const b=bomStats();
+  const rows = D.bom.filter(r=>{const s=statusOf(r); return bomFilter==="all" || (bomFilter==="open"?["tobuy","check"].includes(s):s===bomFilter);});
+  return `<section class="grid g4">
+    <div class="stat"><span class="eyebrow">Estimated</span><span class="v">${money(b.est)}</span><span class="s">items still to buy or in transit</span></div>
+    <div class="stat"><span class="eyebrow">Actual spend</span><span class="v">${money(b.actual)}</span><span class="s">${b.priced} of ${D.bom.length} lines priced</span></div>
+    <div class="stat"><span class="eyebrow">In transit</span><span class="v">${b.ordered}</span><span class="s">${b.received} received</span></div>
+    <div class="stat"><span class="eyebrow">Avg delivery</span><span class="v">${b.avg==null?"–":b.avg.toFixed(1)+" d"}</span><span class="s">from ordered → received</span></div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h2>Parts to buy</h2>
+      <div class="actions"><button id="exportCsv">Export CSV</button></div></div>
+    <div class="filters" role="group" aria-label="Filter">
+      ${[["all","All"],["open","Still to buy"],["ordered","Ordered"],["received","Received"],["have","Have it"]].map(([k,l])=>`<button data-filter="${k}" aria-pressed="${bomFilter===k}">${l}</button>`).join("")}
+    </div>
+    <p class="muted small" style="margin:0">Prices in CAD including tax and shipping. Order and received dates give the delivery time used later for the product page ("ships in") and cost model.</p>
+    <div class="tbl"><table class="bom"><thead><tr><th>#</th><th>Item</th><th>Status</th><th>Qty</th><th>Est.</th><th>Paid</th><th>Vendor</th><th>Ordered</th><th>ETA</th><th>Received</th><th>Notes</th></tr></thead><tbody>
+    ${rows.map(r=>{const b=S.bom[r.id]||{}, st=statusOf(r);
+      return `<tr><td class="id">${esc(r.id)}</td>
+      <td class="spec"><strong>${esc(r.item)}</strong><div class="muted small">${esc(r.spec)}</div>
+        <div class="small" style="margin-top:4px">${r.ottawa_local_option&&r.ottawa_local_option!=="None found - online only"&&r.ottawa_local_option!=="None - online"?`<span class="eyebrow">Ottawa</span> ${esc(r.ottawa_local_option)}<br>`:""}<span class="eyebrow">Source</span> ${esc(r.preferred_source)}${r.lcsc_part&&r.lcsc_part!=="n/a"?` · <span class="eyebrow">LCSC</span> <span class="mono">${esc(r.lcsc_part)}</span>`:""}</div></td>
+      <td><select data-bom="${r.id}" data-f="status" aria-label="Status for ${esc(r.item)}">${opts(BOM_STATUS,st)}</select></td>
+      <td class="num">${esc(r.qty)}</td>
+      <td class="num">${r.est_cost_cad?money(parseFloat(r.est_cost_cad)):"–"}</td>
+      <td><input data-bom="${r.id}" data-f="price" inputmode="decimal" placeholder="0.00" value="${esc(b.price??"")}" aria-label="Paid for ${esc(r.item)}"></td>
+      <td><input data-bom="${r.id}" data-f="vendor" value="${esc(b.vendor??"")}" placeholder="Where" aria-label="Vendor"></td>
+      <td><input type="date" data-bom="${r.id}" data-f="ordered" value="${esc(b.ordered??"")}" aria-label="Ordered date"></td>
+      <td><input type="date" data-bom="${r.id}" data-f="eta" value="${esc(b.eta??"")}" aria-label="ETA"></td>
+      <td><input type="date" data-bom="${r.id}" data-f="received" value="${esc(b.received??"")}" aria-label="Received date"></td>
+      <td><input data-bom="${r.id}" data-f="notes" value="${esc(b.notes??"")}" placeholder="${esc((r.notes||"").slice(0,40))}" aria-label="Notes"></td></tr>`;}).join("")}
+    </tbody></table></div>
+  </section>`;
+}
+
+function vFiles(){
+  const P=D.parts;
+  return `<section class="panel">
+    <div class="panel-head"><h2>Our parts</h2><div class="actions"><button class="primary" data-pack="custom_all" data-name="carvera_atc_custom_parts.zip">Download all (STEP + STL)</button></div></div>
+    <p class="muted small" style="margin:0">Original designs from this project. Each download is a zip with the STEP, STL and a dimensioned render. Bed-coordinate models: re-zero them in OrcaSlicer or MakeraCAM.</p>
+    <div class="grid">${P.custom.map(p=>{const st=S.parts[p.id]?.status||"todo";return `<article class="part">
+      <img src="${p.img}" alt="Render of ${esc(p.name)} with dimensions" loading="lazy">
+      <div style="display:grid;gap:10px;align-content:start;min-width:0">
+        <div class="log-meta"><h3>${esc(p.name)}</h3>${pillFor(PART_STATUS,st)}</div>
+        <p class="small" style="margin:0">${esc(p.why)}</p>
+        <dl><dt>Qty</dt><dd class="mono">${p.qty}</dd><dt>Material</dt><dd>${esc(p.material)}</dd><dt>Settings</dt><dd>${esc(p.settings)}</dd></dl>
+        ${p.notes.length?`<details><summary class="small muted">Design notes</summary><p class="small" style="margin:6px 0 0">${p.notes.map(esc).join("<br>")}</p></details>`:""}
+        <div class="actions"><label class="f" style="min-width:140px">Status<select data-part="${p.id}" aria-label="Print status">${opts(PART_STATUS,st)}</select></label>
+        <button data-pack="custom:${p.id}" data-name="${p.id}.zip" style="align-self:end">Download zip</button></div>
+      </div></article>`}).join("")}</div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h2>Upstream parts (Warioo)</h2><div class="actions">${P.upstream_all?`<button class="primary" data-pack="upstream_all" data-name="warioo_carvera_air_atc_parts.zip">Download all (STEP + STL)</button>`:""}<a href="https://www.instructables.com/Carvera-Air-ATC-Mod/" target="_blank" rel="noopener" class="small">Source →</a></div></div>
+    <p class="muted small" style="margin:0">Warioo's Carvera Air ATC Mod, CC BY-NC-ND 4.0. Each zip has the STEP, a converted STL and a dimensioned render. The magazine file also contains the 8 pods; split it to objects in OrcaSlicer.</p>
+    <div class="tbl"><table><thead><tr><th></th><th>Part</th><th>Size mm</th><th>Qty</th><th>Material</th><th>Settings</th><th>Status</th><th>Files</th></tr></thead><tbody>
+    ${P.upstream.map(p=>{const st=S.parts[p.id]?.status||"todo";return `<tr><td>${p.img?`<img src="${p.img}" alt="" loading="lazy" style="width:84px;max-width:none;border:1px solid var(--line);border-radius:3px;background:#fff">`:""}</td><td><strong>${esc(p.name)}</strong><div class="mono small muted">${esc(p.file||"")}</div></td><td class="mono small">${esc(p.size)}</td><td class="num">${p.qty}</td><td class="small">${esc(p.material)}</td><td class="small">${esc(p.settings)}</td><td><select data-part="${p.id}" aria-label="Status for ${esc(p.name)}">${opts(PART_STATUS,st)}</select></td><td>${p.files?`<button data-pack="up:${p.id}" data-name="${esc(p.file)}.zip">Zip</button>`:""}</td></tr>`}).join("")}
+    </tbody></table></div>
+  </section>`;
+}
+
+function cmdBlock(text){
+  const out=[]; let notes=[];
+  for (const line of text.split("\n")){
+    const t=line.trim();
+    if (!t) continue;
+    if (t.startsWith("#")) { notes.push(t.replace(/^#\s?/,"")); continue; }
+    if (notes.length){ out.push(`<div class="cmd-note">${notes.map(esc).join("<br>")}</div>`); notes=[]; }
+    out.push(`<div class="cmd"><code>${esc(t)}</code><button class="ghost" data-copy="${esc(t)}" aria-label="Copy command">Copy</button></div>`);
+  }
+  if (notes.length) out.push(`<div class="cmd-note">${notes.map(esc).join("<br>")}</div>`);
+  return out.join("");
+}
+function vFirmware(){
+  const f=D.fw;
+  return `<section class="panel">
+    <div class="panel-head"><h2>Setup commands</h2><div class="actions"><button data-copytext="setup">Copy all</button><button data-dltext="setup" data-name="atc_setup_commands.txt">Download .txt</button></div></div>
+    <p class="muted small" style="margin:0">Paste one line at a time into the Carvera Controller MDI. Safe-Z is already raised for your 15 mm bed + 12 mm adapter.</p>
+    <div class="cmds">${cmdBlock(f.setup)}</div>
+  </section>
+  <section class="grid g2">
+    <div class="panel"><div class="panel-head"><h2>custom_tool_slots.txt</h2><div class="actions"><button data-copytext="slots">Copy</button><button data-dltext="slots" data-name="custom_tool_slots.txt">Download</button></div></div>
+      <p class="muted small" style="margin:0">Goes on the SD card root. Format <code>slot X Y Z</code>. Warioo's values; re-teach on your machine (Z ≈ −71.1 to start).</p>
+      <pre>${esc(f.slots)}</pre></div>
+    <div class="panel"><div class="panel-head"><h2>Sensor interface</h2></div>
+      <pre style="white-space:pre-wrap">${esc(f.opto)}</pre></div>
+  </section>
+  <section class="panel"><div class="panel-head"><h2>Bench tester (Pi Pico + TB6600)</h2><div class="actions"><button data-copytext="bench">Copy</button><button data-dltext="bench" data-name="bench_stepper.py.txt">Download</button></div></div>
+    <p class="muted small" style="margin:0">MicroPython. Save as <code>main.py</code> on the Pico. Optional AS5600 reads the gearbox output angle.</p>
+    <pre>${esc(f.bench)}</pre></section>`;
+}
+
+function notesBox(id, ph){
+  const v=S.notes[id]?.text||"";
+  return `<label class="f">Your notes<textarea data-note="${id}" placeholder="${esc(ph||"Add findings, numbers, links…")}">${esc(v)}</textarea></label>`;
+}
+function vPhase2(){
+  const P=D.phases.phase2, b=bomStats();
+  const fb = S.log.filter(l=>["feedback","issue","reprint"].includes(l.kind));
+  return `<section class="panel"><div class="panel-head"><h2>Phase 2 · ${esc(P.title)}</h2><span class="pill">${esc(P.status)}</span></div>
+  <p class="muted small" style="margin:0">This page fills itself in as Phase 1 runs: build feedback from the Log, real costs and delivery times from Parts to buy.</p></section>
+  ${P.sections.map(s=>{
+    let inner="";
+    if (s.auto==="log:feedback") inner = fb.length?fb.map(logItem).join(""):`<p class="empty">No feedback yet. Log entries tagged Feedback, Issue or Reprint show up here.</p>`;
+    else if (s.auto==="bom:cost") inner = `<div class="grid g4">
+        <div class="stat"><span class="eyebrow">Prototype spend</span><span class="v">${money(b.actual)}</span><span class="s">${b.priced} lines priced</span></div>
+        <div class="stat"><span class="eyebrow">Still estimated</span><span class="v">${money(b.est)}</span><span class="s">unpriced or open lines</span></div>
+        <div class="stat"><span class="eyebrow">Avg delivery</span><span class="v">${b.avg==null?"–":b.avg.toFixed(1)+" d"}</span><span class="s">${b.leads.length} deliveries logged</span></div>
+        <div class="stat"><span class="eyebrow">Slowest part</span><span class="v small" style="font-size:1rem">${b.leads.length?esc(b.leads[0].item):"–"}</span><span class="s">${b.leads.length?b.leads[0].days+" days":"log dates to see this"}</span></div></div>
+        ${b.leads.length?`<div class="tbl"><table><thead><tr><th>Part</th><th>Vendor</th><th>Days</th></tr></thead><tbody>${b.leads.map(l=>`<tr><td>${esc(l.item)}</td><td>${esc(l.vendor)}</td><td class="num">${l.days}</td></tr>`).join("")}</tbody></table></div>`:""}`;
+    else if (s.checklist) inner = `<ul class="check" style="padding:0">${s.checklist.map(liCheck).join("")}</ul>`;
+    else inner = `<p style="margin:0">${esc(s.body)}</p>`;
+    return `<section class="panel"><div class="panel-head"><h3>${esc(s.title)}</h3></div>${s.body&&s.auto?`<p class="muted small" style="margin:0">${esc(s.body)}</p>`:""}${inner}${notesBox(s.id)}</section>`;
+  }).join("")}`;
+}
+function vPhase3(){
+  const P=D.phases.phase3;
+  return `<section class="panel"><div class="panel-head"><h2>Phase 3 · ${esc(P.title)}</h2><span class="pill">${esc(P.status)}</span></div>
+  <p class="muted small" style="margin:0">Collect product-page facts and B-roll as you go, so the voltpak.ca listing and promo content can be built from real data.</p></section>
+  ${P.sections.map(s=>{
+    let inner="";
+    if (s.fields) inner = `<div class="form">${s.fields.map(f=>`<label class="f ${["inbox","specs"].includes(f.id)?"wide":""}">${esc(f.label)}${["inbox","specs"].includes(f.id)?`<textarea data-listing="${f.id}" style="min-height:60px">${esc(S.listing[f.id]||"")}</textarea>`:`<input data-listing="${f.id}" value="${esc(S.listing[f.id]||"")}">`}</label>`).join("")}</div>`;
+    else if (s.shots) inner = `<div class="tbl"><table><thead><tr><th>Shot</th><th>Used for</th><th>Status</th></tr></thead><tbody>${s.shots.map(sh=>{const st=S.shots[sh.id]?.status||"planned";return `<tr><td>${esc(sh.text)}</td><td class="small muted">${esc(sh.use)}</td><td><select data-shot="${sh.id}" aria-label="Status">${opts(SHOT_STATUS,st)}</select></td></tr>`}).join("")}</tbody></table></div>`;
+    else if (s.checklist) inner = `<ul class="check" style="padding:0">${s.checklist.map(liCheck).join("")}</ul>`;
+    return `<section class="panel"><div class="panel-head"><h3>${esc(s.title)}</h3></div>${s.body?`<p class="muted small" style="margin:0">${esc(s.body)}</p>`:""}${inner}${notesBox(s.id)}</section>`;
+  }).join("")}`;
+}
+
+const KINDS=[["milestone","Milestone","ok"],["feedback","Feedback","info"],["issue","Issue","warn"],["reprint","Reprint","warn"],["purchase","Purchase","acc"],["note","Note",""]];
+function logItem(l){
+  return `<div class="log-item"><div class="log-meta"><span class="mono small">${esc(l.date)}</span>${pillFor(KINDS,l.kind)}<span class="pill">Phase ${esc(l.phase)}</span>${l.hours?`<span class="mono small muted">${esc(l.hours)} h</span>`:""}${l.cost?`<span class="mono small muted">${money(parseFloat(l.cost))}</span>`:""}${l._id&&location.hash==="#log"?`<button class="ghost small" data-del="${l._id}" style="margin-left:auto">Delete</button>`:""}</div><div>${esc(l.text)}</div></div>`;
+}
+let pendingDelete=null;
+function vLog(){
+  return `<section class="panel"><div class="panel-head"><h2>Add a log entry</h2><span class="muted small">After each session: what you did, what broke, what it cost.</span></div>
+  <form id="logForm" class="form">
+    <label class="f">Date<input type="date" id="lgDate" value="${today()}" required></label>
+    <label class="f">Phase<select id="lgPhase"><option>1</option><option>2</option><option>3</option></select></label>
+    <label class="f">Type<select id="lgKind">${opts(KINDS,"feedback")}</select></label>
+    <label class="f">Hours<input id="lgHours" inputmode="decimal" placeholder="0.0"></label>
+    <label class="f">Cost (CAD)<input id="lgCost" inputmode="decimal" placeholder="0.00"></label>
+    <label class="f wide">What happened<textarea id="lgText" required placeholder="e.g. BottomGear bore too tight at 14.06; used +0.06 hole compensation, press fit now perfect."></textarea></label>
+    <div class="actions wide"><button class="primary" type="submit" ${canWrite()?"":"disabled"}>Add entry</button>${pendingDelete?`<span class="small">Delete that entry? <button type="button" id="delYes">Delete</button> <button type="button" id="delNo" class="ghost">Keep</button></span>`:""}</div>
+  </form></section>
+  <section class="panel"><div class="panel-head"><h2>Log</h2><span class="mono small muted">${S.log.length} entries</span></div>
+  ${S.log.length?S.log.map(logItem).join(""):`<p class="empty">Nothing logged yet. Your first entry will appear here, newest first.</p>`}</section>`;
+}
+
+/* ---------- render ---------- */
+const VIEWS={overview:vOverview,build:vBuild,bom:vBom,files:vFiles,firmware:vFirmware,"phase-2":vPhase2,"phase-3":vPhase3,log:vLog};
+const route = () => { const h=location.hash.slice(1); return VIEWS[h]?h:"overview"; };
+let deferred=false;
+function renderAll(force){
+  const ae=document.activeElement;
+  if (!force && ae && $("#main").contains(ae) && /INPUT|TEXTAREA|SELECT/.test(ae.tagName) && ae.type!=="checkbox"){ deferred=true; renderChrome(); return; }
+  deferred=false;
+  renderChrome();
+  const r=route();
+  const banner = S.dbState==="off" ? `<div class="banner">Saving is off in this view, so changes won't be kept. Open the tracker on claude.ai while signed in to save progress.</div>`
+               : S.dbState==="slow" ? `<div class="banner">Your saved progress hasn't loaded yet. Showing defaults; edits will still save.</div>` : "";
+  $("#main").innerHTML = banner + VIEWS[r]();
+}
+function renderChrome(){
+  const r=route(), p=p1Progress();
+  $("#tabs").innerHTML = TABS.map(([k,l])=>`<a href="#${k}" ${k===r?'aria-current="page"':""}>${l}</a>`).join("");
+  $("#p1bar").style.width=p.pct+"%"; $("#p1pct").textContent=p.pct+"%";
+}
+window.addEventListener("hashchange",()=>{pendingDelete=null;renderAll(true);window.scrollTo(0,0)});
+document.addEventListener("focusout",()=>{ if(deferred) setTimeout(()=>{ if(deferred) renderAll(); },0); });
+
+/* ---------- events ---------- */
+document.addEventListener("change", e=>{
+  const t=e.target;
+  if (t.dataset.check) return saveCheck(t.dataset.check, t.checked);
+  if (t.dataset.bom) { deferred=false; return saveDoc("bom", t.dataset.bom, {[t.dataset.f]: t.value.trim()}); }
+  if (t.dataset.part) return saveDoc("parts", t.dataset.part, {status:t.value});
+  if (t.dataset.shot) return saveDoc("shots", t.dataset.shot, {status:t.value});
+  if (t.dataset.note) return saveDoc("notes", t.dataset.note, {text:t.value});
+  if (t.dataset.listing) return saveListing({[t.dataset.listing]: t.value});
+});
+document.addEventListener("click", async e=>{
+  const t=e.target.closest("button,[data-filter]"); if(!t) return;
+  if (t.dataset.filter){ bomFilter=t.dataset.filter; return renderAll(true); }
+  if (t.dataset.copy!==undefined || t.dataset.copytext){
+    const text = t.dataset.copytext ? D.fw[t.dataset.copytext] : t.dataset.copy;
+    try { await navigator.clipboard.writeText(text); toast("Copied"); }
+    catch { const r=document.createRange(); const code=t.parentElement.querySelector("code,pre")||t.closest(".panel").querySelector("pre"); if(code){r.selectNodeContents(code);const s=getSelection();s.removeAllRanges();s.addRange(r);} toast("Selected. Press Ctrl/Cmd+C to copy"); }
+    return;
+  }
+  if (t.dataset.pack || t.dataset.dltext || t.id==="exportCsv"){
+    if (!downloads){ toast("Downloads aren't available in this view. Get the files from the GitHub repo."); return; }
+    try{
+      let data, name=t.dataset.name;
+      if (t.dataset.pack){ t.disabled=true; const old=t.textContent; t.textContent="Packing…"; try{ data=await packZip(packList(t.dataset.pack)); } finally { t.disabled=false; t.textContent=old; } }
+      else if (t.dataset.dltext){ data=D.fw[t.dataset.dltext]; }
+      else { data=bomCsv(); name=`carvera_atc_bom_${today()}.csv`; }
+      await downloads.save({filename:name, data}); toast("Saved "+name);
+    }catch(err){ if(err?.code!=="declined") toast(err?.code==="fetch"?"That file couldn't be loaded. Try again.":"Download didn't start. Try again."); }
+    return;
+  }
+  if (t.dataset.del){ pendingDelete=t.dataset.del; return renderAll(true); }
+  if (t.id==="delNo"){ pendingDelete=null; return renderAll(true); }
+  if (t.id==="delYes" && pendingDelete){ const id=pendingDelete; pendingDelete=null; S.log=S.log.filter(l=>l._id!==id); renderAll(true); if(canWrite()) enqueue("log/"+id,()=>db.doc("log/"+id).delete()); toast("Entry deleted"); }
+});
+document.addEventListener("submit", e=>{
+  if (e.target.id!=="logForm") return;
+  e.preventDefault();
+  const entry={date:$("#lgDate").value||today(), phase:$("#lgPhase").value, kind:$("#lgKind").value, hours:$("#lgHours").value.trim(), cost:$("#lgCost").value.trim(), text:$("#lgText").value.trim(), createdAt:new Date().toISOString()};
+  if(!entry.text){ toast("Write what happened first."); return; }
+  if(!canWrite()) return;
+  const ref=db.collection("log").doc();
+  S.log=[{...entry,_id:ref.id},...S.log];
+  renderAll(true); toast("Entry added");
+  enqueue("log/"+ref.id,()=>ref.set(entry));
+});
+function packList(key){
+  const P=D.parts;
+  if (key==="custom_all") return P.custom_all;
+  if (key==="upstream_all") return P.upstream_all;
+  const [kind,id]=key.split(":");
+  return ((kind==="custom"?P.custom:P.upstream).find(p=>p.id===id)||{}).files||[];
+}
+async function packZip(list){
+  if (!window.JSZip) throw {code:"fetch"};
+  const z=new JSZip();
+  for (const f of list){
+    if (f.enc==="bin"){ const r=await fetch(f.paths[0]); if(!r.ok) throw {code:"fetch"}; z.file(f.name, await r.arrayBuffer()); continue; }
+    let t="";
+    for (const p of f.paths){ const r=await fetch(p); if(!r.ok) throw {code:"fetch"}; t+=(await r.text()).trim(); }
+    if (f.enc==="b64") z.file(f.name, t, {base64:true}); else z.file(f.name, t);
+  }
+  return z.generateAsync({type:"blob", compression:"DEFLATE"});
+}
+function bomCsv(){
+  const cols=["id","item","spec","qty","status","est_cost_cad","price_paid_cad","vendor","ordered","eta","received","lead_days","lcsc_part","notes"];
+  const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  return [cols.join(",")].concat(D.bom.map(r=>{const b=S.bom[r.id]||{}; const ld=(b.ordered&&b.received)?Math.round((new Date(b.received)-new Date(b.ordered))/864e5):"";
+    return [r.id,r.item,r.spec,r.qty,statusOf(r),r.est_cost_cad,b.price,b.vendor,b.ordered,b.eta,b.received,ld,r.lcsc_part,b.notes||r.notes].map(q).join(",");})).join("\n");
+}
+
+/* ---------- boot ---------- */
+renderAll(true);
+(async()=>{
+  try{ downloads = await window.claude?.use?.("downloads") ?? null; }catch{ downloads=null; }
+  try{ db = await window.claude?.use?.("db") ?? null; }catch{ db=null; }
+  if(!db){ S.dbState="off"; renderAll(); return; }
+  const slow=setTimeout(()=>{ if(!S.ready){ S.dbState="slow"; renderAll(); } },10000);
+  const ok=()=>{ if(!S.ready){ S.ready=true; S.dbState="on"; clearTimeout(slow);} };
+  const err=e=>{ console.error(e); clearTimeout(slow); S.dbState="off"; renderAll(); };
+  db.doc("state/checks").onSnapshot(s=>{ S.checks = s.exists ? {...(s.data().items||{})} : {}; if(!s.metadata.fromCache) ok(); renderAll(); }, err);
+  const col=(name,key)=>db.collection(name).onSnapshot(q=>{ const m={}; q.docs.forEach(d=>m[d.id]=d.data()); S[key]=m; renderAll(); }, err);
+  col("bom","bom"); col("parts","parts"); col("shots","shots"); col("notes","notes");
+  db.doc("product/listing").onSnapshot(s=>{ S.listing = s.exists ? {...s.data()} : {}; renderAll(); }, err);
+  db.collection("log").onSnapshot(q=>{ S.log=q.docs.map(d=>({...d.data(),_id:d.id})).sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.createdAt||"").localeCompare(a.createdAt||"")); renderAll(); }, err);
+})();
+</script>

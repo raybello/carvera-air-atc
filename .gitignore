@@ -14,3 +14,5 @@ media/broll/**
 # Slicer output
 *.gcode
 *.3mf.bak
+# Tracker build output (contains upstream CC BY-NC-ND files)
+tracker/dist/
